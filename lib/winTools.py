@@ -1,18 +1,44 @@
+#!/bin/python3
 import win32api
+import win32con
+import ctypes
+from ctypes import wintypes
 from ctypes import WinDLL
-user32 = WinDLL("user32")
-user32.keybd_event(0xAF, 0, 0, 0)
-user32.keybd_event(0xAE, 0, 0, 0)
+
+PHYSICAL_MONITOR_DESCRIPTION_SIZE = 128
+
+
+class PHYSICAL_MONITOR(ctypes.Structure):
+    _fields_ = [('hPhysicalMonitor', wintypes.HANDLE),
+                ('szPhysicalMonitorDescription',
+                 ctypes.c_wchar * PHYSICAL_MONITOR_DESCRIPTION_SIZE)]
+
+def winVolumeAdjust():
+    user32 = WinDLL("user32")
+    #volumn_up
+    user32.keybd_event(0xAF, 0, 0, 0)
+    #volumn_down
+    user32.keybd_event(0xAE, 0, 0, 0)
+
+def winBrightnessAdjust(brightness):
+    MONITOR_DEFAULTTOPRIMARY = 1
+    h_wnd = ctypes.windll.user32.GetDesktopWindow()
+    h_monitor = ctypes.windll.user32.MonitorFromWindow(h_wnd, MONITOR_DEFAULTTOPRIMARY)
+    nummons = wintypes.DWORD()
+    bres = ctypes.windll.Dxva2.GetNumberOfPhysicalMonitorsFromHMONITOR(h_monitor, ctypes.byref(nummons))
+    physical_monitors = (PHYSICAL_MONITOR * nummons.value)()
+    bres = ctypes.windll.Dxva2.GetPhysicalMonitorsFromHMONITOR(h_monitor, nummons, physical_monitors)
+    physical_monitor = physical_monitors[0]
+    min_brightness = wintypes.DWORD()
+    max_brightness = wintypes.DWORD()
+    cur_brightness = wintypes.DWORD()
+
+    curBres = ctypes.windll.Dxva2.GetMonitorBrightness(physical_monitor.hPhysicalMonitor, ctypes.byref(min_brightness), ctypes.byref(cur_brightness), ctypes.byref(max_brightness))
+    print(curBres)
+    bres = ctypes.windll.Dxva2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness)
+
+winBrightnessAdjust(10)
 
 
 
-# 通知窗口用户生成了应用程序命令事件，例如，使用鼠标单击应用程序命令按钮或在键盘上键入应用程序命令键。
-# WM_APPCOMMAND = 0x319
-# APPCOMMAND_VOLUME_MAX = 0x0a
-# APPCOMMAND_VOLUME_MIN = 0x09
-# APPCOMMAND_VOLUME_DOWN = 0xAE
-# APPCOMMAND_VOLUME_UP = 0xAF
-# APPCOMMAND_MICROPHONE_VOLUME_DOWN = 0x15
-# APPCOMMAND_MICROPHONE_VOLUME_UP = 0x16
-#win32api.SendMessage(-1, WM_APPCOMMAND, 0x30292, APPCOMMAND_VOLUME_MAX * 0x10000) 0xA0000
-#win32api.SendMessage(-1, WM_APPCOMMAND, 0x30292, APPCOMMAND_VOLUME_MIN * 0x10000) 0x90000
+

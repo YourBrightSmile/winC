@@ -1,11 +1,13 @@
 #!/bin/python3
 import asyncio
 import tornado
+from lib import winTools
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         content=tornado.template.Loader("../static/").load("index.html").generate()
         self.write(content)
+        winTools.winBrightnessAdjust(100)
 
 def make_app():
     return tornado.web.Application([
