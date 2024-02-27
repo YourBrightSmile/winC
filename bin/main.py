@@ -7,7 +7,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         content=tornado.template.Loader("../static/").load("index.html").generate()
         self.write(content)
-        winTools.winBrightnessAdjust(100)
+        #winTools.winBrightnessAdjust(30)
 
 def make_app():
     return tornado.web.Application([

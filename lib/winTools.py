@@ -37,7 +37,7 @@ def winBrightnessAdjust(brightness):
     print(curBres)
     bres = ctypes.windll.Dxva2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness)
 
-winBrightnessAdjust(10)
+winBrightnessAdjust(20)
 
 
 
