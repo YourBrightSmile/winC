@@ -1,7 +1,7 @@
 #!/bin/python3
 import asyncio
 import tornado
-from lib import winTools
+from lib import *
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):

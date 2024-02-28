@@ -13,12 +13,17 @@ def getMonitorsAndBrightness():
     mab = {}
     mons = sbc.list_monitors()
     for mon in mons:
-        mab[mon] = sbc.get_brightness(mon)
+        try:
+            mab[mon] = sbc.get_brightness(mon)
+        except Exception as e:
+            print("except Exception:", e)
     return mab
 def setMonitorBrightness(display, brightness):
     sbc.set_brightness(brightness, display)
 
-def winVolumeAdjust():
+
+#volumeSize 0.01-1.00
+def winVolumeAdjust(volumeSize,method):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
@@ -33,9 +38,9 @@ def winVolumeAdjust():
 
     # volume.GetMute()
     # volume.SetMute(1, None)
-    volume.SetMasterVolumeLevelScalar(0.21, None)
+    volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
-def winMicrophoneAdjust():
+def winMicrophoneAdjust(volumeSize,method):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
@@ -50,7 +55,7 @@ def winMicrophoneAdjust():
 
     # volume.GetMute()
     # volume.SetMute(1, None)
-    volume.SetMasterVolumeLevelScalar(0.21, None)
+    volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
 def getAudioDevices(direction="in", State = DEVICE_STATE.ACTIVE.value):
     devices = []
