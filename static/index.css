@@ -1,4 +1,40 @@
-.wv_input {
-	-webkit-appearance:slider-vertical;
-	
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type="range"] {
+   -webkit-appearance: none;
+   writing-mode:vertical-lr;
+   appearance: none;
+   background: transparent;
+   cursor: pointer;
+}
+
+/* Removes default focus */
+input[type="range"]:focus {
+  outline: none;
+}
+
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+   background:blue;
+   border-radius: 0.5rem;
+   height: 200px;  
+   width: 100px;
+}
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+   appearance: none;
+
+   /*custom styles*/
+   background-color: #5cd5eb;
+   border: 1px solid;
+   border-image: linear-gradient(#f44336,#f44336) 0 fill / 8 20 8 0 / 0 0 99vw 0; /*绘制元素外矩形*/
+   border-radius: 0.5rem;
+   height: 30px;
+   width: 100%;
+}
+input[type="range"]::-webkit-slider-container {
+    /*其他样式*/
+    overflow: hidden;
 }

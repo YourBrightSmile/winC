@@ -5,15 +5,33 @@
 		<link rel="stylesheet" type="text/css" href="../static/index.css">
 	</head>
 	<body>
-		<div id="volume_control">
-			<button>VU</button>
-			<button>VD</button>
-                        <input class="wv_input" type="range"  min="0" max="100">
+		<div id="page01">
+			<div id="volume_control">
+				<button>VD</button>
+				<button>VU</button>
+				<input class="wv_input" value=20 type="range"  min="0" max="100">
+				<ul>
+					<li>deviceI</li>
+				</ul>
+			</div>
+			<div id="mic_control">
+				<button>MD</button>
+				<button>MU</button>
+				<input class="wv_input" value=20 type="range"  min="0" max="100">
+				<ul>
+					<li>deviceI</li>
+				</ul>
+			</div>
+			<div id="brightness_control">
+				<button>BD</button>
+				<button>BU</button>
+				<input class="wv_input" value=20 type="range"  min="0" max="100">
+				<ul>
+					<li>monitor</li>
+				</ul>
+			</div>
+
 		</div>
-		<div id="brightness_control">
-                        <button>VU</button>
-                        <button>VD</button>
-                        <input class="wv_input" type="range"  min="0" max="100">
-                </div>
+
 	</body>
 </html>

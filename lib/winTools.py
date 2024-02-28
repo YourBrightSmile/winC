@@ -1,6 +1,6 @@
 #!/bin/python3
 from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL, GUID
+from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
 from pycaw.api.mmdeviceapi import IMMDeviceEnumerator
 from pycaw.constants import DEVICE_STATE, EDataFlow, CLSID_MMDeviceEnumerator
