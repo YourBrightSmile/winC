@@ -1,44 +1,113 @@
 #!/bin/python3
-import win32api
-import win32con
-import ctypes
-from ctypes import wintypes
-from ctypes import WinDLL
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL, GUID
+from pycaw.api.endpointvolume import IAudioEndpointVolume
+from pycaw.api.mmdeviceapi import IMMDeviceEnumerator
+from pycaw.constants import DEVICE_STATE, EDataFlow, CLSID_MMDeviceEnumerator
+from pycaw.utils import AudioUtilities
+import comtypes
+import screen_brightness_control as sbc
+import policyconfig as pc
 
-PHYSICAL_MONITOR_DESCRIPTION_SIZE = 128
-
-
-class PHYSICAL_MONITOR(ctypes.Structure):
-    _fields_ = [('hPhysicalMonitor', wintypes.HANDLE),
-                ('szPhysicalMonitorDescription',
-                 ctypes.c_wchar * PHYSICAL_MONITOR_DESCRIPTION_SIZE)]
+def getMonitorsAndBrightness():
+    mab = {}
+    mons = sbc.list_monitors()
+    for mon in mons:
+        mab[mon] = sbc.get_brightness(mon)
+    return mab
+def setMonitorBrightness(display, brightness):
+    sbc.set_brightness(brightness, display)
 
 def winVolumeAdjust():
-    user32 = WinDLL("user32")
-    #volumn_up
-    user32.keybd_event(0xAF, 0, 0, 0)
-    #volumn_down
-    user32.keybd_event(0xAE, 0, 0, 0)
+    # user32 = WinDLL("user32")
+    # volume_up
+    # user32.keybd_event(0xAF, 0, 0, 0)
+    # volume_down
+    # user32.keybd_event(0xAE, 0, 0, 0)
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    # vol_range = volume.GetVolumeRange()
+    cur_volume = volume.GetMasterVolumeLevel()
+    isMute = volume.GetMute()
 
-def winBrightnessAdjust(brightness):
-    MONITOR_DEFAULTTOPRIMARY = 1
-    h_wnd = ctypes.windll.user32.GetDesktopWindow()
-    h_monitor = ctypes.windll.user32.MonitorFromWindow(h_wnd, MONITOR_DEFAULTTOPRIMARY)
-    nummons = wintypes.DWORD()
-    bres = ctypes.windll.Dxva2.GetNumberOfPhysicalMonitorsFromHMONITOR(h_monitor, ctypes.byref(nummons))
-    physical_monitors = (PHYSICAL_MONITOR * nummons.value)()
-    bres = ctypes.windll.Dxva2.GetPhysicalMonitorsFromHMONITOR(h_monitor, nummons, physical_monitors)
-    physical_monitor = physical_monitors[0]
-    min_brightness = wintypes.DWORD()
-    max_brightness = wintypes.DWORD()
-    cur_brightness = wintypes.DWORD()
+    # volume.GetMute()
+    # volume.SetMute(1, None)
+    volume.SetMasterVolumeLevelScalar(0.21, None)
 
-    curBres = ctypes.windll.Dxva2.GetMonitorBrightness(physical_monitor.hPhysicalMonitor, ctypes.byref(min_brightness), ctypes.byref(cur_brightness), ctypes.byref(max_brightness))
-    print(curBres)
-    bres = ctypes.windll.Dxva2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness)
+def winMicrophoneAdjust():
+    # user32 = WinDLL("user32")
+    # volume_up
+    # user32.keybd_event(0xAF, 0, 0, 0)
+    # volume_down
+    # user32.keybd_event(0xAE, 0, 0, 0)
+    devices = AudioUtilities.GetMicrophone()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    # vol_range = volume.GetVolumeRange()
+    cur_volume = volume.GetMasterVolumeLevel()
+    isMute = volume.GetMute()
 
-winBrightnessAdjust(20)
+    # volume.GetMute()
+    # volume.SetMute(1, None)
+    volume.SetMasterVolumeLevelScalar(0.21, None)
+
+def getAudioDevices(direction="in", State = DEVICE_STATE.ACTIVE.value):
+    devices = []
+    # for all use EDataFlow.eAll.value
+    if direction == "in":
+        Flow = EDataFlow.eCapture.value     # 1
+    else:
+        Flow = EDataFlow.eRender.value      # 0
+
+    deviceEnumerator = comtypes.CoCreateInstance(
+        CLSID_MMDeviceEnumerator,
+        IMMDeviceEnumerator,
+        comtypes.CLSCTX_INPROC_SERVER)
+    if deviceEnumerator is None:
+        return devices
+
+
+    collection = deviceEnumerator.EnumAudioEndpoints(Flow, State)
+    if collection is None:
+        return devices
+
+    count = collection.GetCount()
+    for i in range(count):
+        dev = collection.Item(i)
+        if dev is not None:
+            if not ": None" in str(AudioUtilities.CreateDevice(dev)):
+                devices.append(AudioUtilities.CreateDevice(dev))
+    deviceID={}
+    for device in devices:
+        deviceID[device.id]=device
+    return deviceID
+def switchIODevice(deviceId, role):
+    policy_config = comtypes.CoCreateInstance(
+        pc.CLSID_PolicyConfigClient,
+        pc.IPolicyConfig,
+        comtypes.CLSCTX_ALL
+    )
+    # Set OutputDevice: policy_config.SetDefaultEndpoint(deviceId, 0)
+    # Set IputDevice: policy_config.SetDefaultEndpoint(deviceId, 1)
+
+    policy_config.SetDefaultEndpoint(deviceId, role)
+    policy_config.Release()
 
 
 
 
+# winBrightnessAdjust(20)
+# print(getMonitorsAndBrightness())
+#
+# setMonitorBrightness('Lenovo 40A0',100)
+# sbc.fade_brightness(0,None,0.01)
+#winVolumeAdjust()
+
+# inD = getAudioDevices('in')
+# outD = getAudioDevices('out')
+# for i in inD:
+#     print(i, inD[i])
+# for o in outD:
+#     print(o)
+#a=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)
