@@ -65,7 +65,7 @@ def winMicrophoneAdjust(volumeSize, method):
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
 
-def getAudioDevices(direction="in", State=DEVICE_STATE.ACTIVE.value):
+def getAudioDevices(direction="in", state=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
     if direction == "in":
@@ -80,7 +80,7 @@ def getAudioDevices(direction="in", State=DEVICE_STATE.ACTIVE.value):
     if deviceEnumerator is None:
         return devices
 
-    collection = deviceEnumerator.EnumAudioEndpoints(Flow, State)
+    collection = deviceEnumerator.EnumAudioEndpoints(Flow, state)
     if collection is None:
         return devices
 
