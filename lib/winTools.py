@@ -1,4 +1,5 @@
 #!/bin/python3
+import time
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
@@ -6,8 +7,11 @@ from pycaw.api.mmdeviceapi import IMMDeviceEnumerator
 from pycaw.constants import DEVICE_STATE, EDataFlow, CLSID_MMDeviceEnumerator
 from pycaw.utils import AudioUtilities
 import comtypes
+import ctypes
 import screen_brightness_control as sbc
 import policyconfig as pc
+import pyautogui
+
 
 def getMonitorsAndBrightness():
     mab = {}
@@ -18,12 +22,14 @@ def getMonitorsAndBrightness():
         except Exception as e:
             print("except Exception:", e)
     return mab
+
+
 def setMonitorBrightness(display, brightness):
     sbc.set_brightness(brightness, display)
 
 
-#volumeSize 0.01-1.00
-def winVolumeAdjust(volumeSize,method):
+# volumeSize 0.01-1.00
+def winVolumeAdjust(volumeSize, method):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
@@ -40,7 +46,8 @@ def winVolumeAdjust(volumeSize,method):
     # volume.SetMute(1, None)
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
-def winMicrophoneAdjust(volumeSize,method):
+
+def winMicrophoneAdjust(volumeSize, method):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
@@ -57,13 +64,14 @@ def winMicrophoneAdjust(volumeSize,method):
     # volume.SetMute(1, None)
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
-def getAudioDevices(direction="in", State = DEVICE_STATE.ACTIVE.value):
+
+def getAudioDevices(direction="in", State=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
     if direction == "in":
-        Flow = EDataFlow.eCapture.value     # 1
+        Flow = EDataFlow.eCapture.value  # 1
     else:
-        Flow = EDataFlow.eRender.value      # 0
+        Flow = EDataFlow.eRender.value  # 0
 
     deviceEnumerator = comtypes.CoCreateInstance(
         CLSID_MMDeviceEnumerator,
@@ -71,7 +79,6 @@ def getAudioDevices(direction="in", State = DEVICE_STATE.ACTIVE.value):
         comtypes.CLSCTX_INPROC_SERVER)
     if deviceEnumerator is None:
         return devices
-
 
     collection = deviceEnumerator.EnumAudioEndpoints(Flow, State)
     if collection is None:
@@ -83,10 +90,12 @@ def getAudioDevices(direction="in", State = DEVICE_STATE.ACTIVE.value):
         if dev is not None:
             if not ": None" in str(AudioUtilities.CreateDevice(dev)):
                 devices.append(AudioUtilities.CreateDevice(dev))
-    deviceID={}
+    deviceID = {}
     for device in devices:
-        deviceID[device.id]=device
+        deviceID[device.id] = device
     return deviceID
+
+
 def switchIODevice(deviceId, role):
     policy_config = comtypes.CoCreateInstance(
         pc.CLSID_PolicyConfigClient,
@@ -100,14 +109,32 @@ def switchIODevice(deviceId, role):
     policy_config.Release()
 
 
+def isWinLocked():
+    return ctypes.windll.user32.GetForegroundWindow() == 0
 
+
+# can't use, windown prevent input
+def unlockWindows():
+    try:
+        pyautogui.click(1, 1, 1)
+        time.sleep(1)
+        pyautogui.click(pyautogui.locateOnScreen('password_box.png'))
+        time.sleep(1)
+        pyautogui.FAILSAFE = False
+        pyautogui.typewrite("ff", 1)
+        pyautogui.typewrite("enter", 1)
+        time.sleep(1)
+    except:
+        pass
+# time.sleep(10)
+# unlockWindows()
 
 # winBrightnessAdjust(20)
 # print(getMonitorsAndBrightness())
 #
 # setMonitorBrightness('Lenovo 40A0',100)
 # sbc.fade_brightness(0,None,0.01)
-#winVolumeAdjust()
+# winVolumeAdjust()
 
 # inD = getAudioDevices('in')
 # outD = getAudioDevices('out')
@@ -115,4 +142,4 @@ def switchIODevice(deviceId, role):
 #     print(i, inD[i])
 # for o in outD:
 #     print(o)
-#a=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)
+# a=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)

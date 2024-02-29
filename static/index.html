@@ -1,36 +1,65 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<script src="../static/index.js" async=""></script>
 		<link rel="stylesheet" type="text/css" href="../static/index.css">
 	</head>
 	<body>
-		<div id="page01">
-			<div id="volume_control">
-				<button>VD</button>
-				<button>VU</button>
-				<input class="wv_input" value=20 type="range"  min="0" max="100">
-				<ul>
-					<li>deviceI</li>
-				</ul>
-			</div>
-			<div id="mic_control">
-				<button>MD</button>
-				<button>MU</button>
-				<input class="wv_input" value=20 type="range"  min="0" max="100">
-				<ul>
-					<li>deviceI</li>
-				</ul>
-			</div>
-			<div id="brightness_control">
-				<button>BD</button>
-				<button>BU</button>
-				<input class="wv_input" value=20 type="range"  min="0" max="100">
-				<ul>
-					<li>monitor</li>
-				</ul>
-			</div>
+		<div class="foot">
+			<div class="panel" id="page01">
+				<div class="control" id="volume_control">
+					<div>
+						<input class="wv_input" value=20 type="range"  min="0" max="100">
+						<img src="./icon/volume.svg">
+					</div>
+					<div>
+						<button>-</button>
+						<button>+</button>
+					</div>
+					<div>
+						<ul>
+							<li>deviceI</li>
+						</ul>
+					</div>
+				</div>
+				<div class="control" id="mic_control">
+					<div>
+						<input class="wv_input" value=20 type="range"  min="0" max="100">
+					</div>
 
+					<div>
+						<button>-</button>
+						<button>+</button>
+					</div>
+					<div>
+						<ul>
+							<li>deviceI</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="control" id="brightness_control">
+					<div>
+						<input class="wv_input" value=20 type="range"  min="0" max="100">
+					</div>
+
+					<div>
+						<button>VD</button>
+						<button>VU</button>
+					</div>
+					<div>
+						<ul>
+							<li>deviceI</li>
+						</ul>
+					</div>
+
+				</div>
+
+
+			</div>
+			<div class="panel" id="page02">222</div>
+			<div class="panel" id="page03">333</div>
 		</div>
 
 	</body>
