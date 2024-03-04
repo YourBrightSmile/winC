@@ -11,10 +11,12 @@ c.CPUEnabled = True # get the Info about CPU
 c.GPUEnabled = True # get the Info about GPU
 c.Open()
 c.Hardware[0].Update()
+c.Hardware[1].Update()
 print(c.Hardware[0].Sensors)
 print(c.Hardware[0].Sensors[0].Identifier)
 print(c.Hardware[0].Sensors[0].get_Value())
 print(c.Hardware[0].Sensors[0].get_Value())
+print(c.Hardware[1].Sensors[0].get_Name())
 #while True:
 #    for a in range(0, len(c.Hardware[0].Sensors)):
 #        # print(c.Hardware[0].Sensors[a].Identifier)
