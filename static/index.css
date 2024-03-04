@@ -6,21 +6,116 @@
 	text-decoration: none;
 }
 html,body {
+    width:100%;
     height:100%;
-    width:300%;
-    overflow: hidden;
+
 }
 .foot {
-    background-image:url("./img/tmp.jpg");
     width:100%;
     height:100%;
     position:absolute;
+    background:gray;
+    background-image:url("./img/tmp.jpg");
+    display:flex;
+    overflow:hidden;
 }
+
 .panel {
     position:relative;
     float:left;
     width:100%;
     height:100%;
+    flex:0 0 100%;
+}
+#page01 {
+    backdrop-filter: blur(2px);
+}
+.wininfo {
+    float:left;
+    width:50%;
+    height:70%;
+    text-align:center;
+}
+.datetime {
+    float:left;
+    width:20%;
+    height:70%;
+    position:absolute;
+
+}
+#datetime_container {
+    position:absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.datetime_text {
+    color:white;
+    font-size: 85px;
+    font-weight: bold;
+    line-height: 0.8;
+    letter-spacing: 5px
+}
+.date_text {
+    position:absolute;
+    width:100%;
+    height:20%;
+    top: 85%;
+    font-size: 15px;
+    text-align: center;
+}
+.weather {
+    float:left;
+    width:100%;
+    height:30%;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+.cur_weather {
+    width:20%;
+    height:100%;
+}
+.days_weatherC {
+    width:80%;
+    height:100%;
+    display:flex;
+    justify-content: space-between;
+}
+.days_weather {
+    width:100%;
+    height:100%;
+}
+.cur_weather {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    text-align:center;
+}
+#curTemperature {
+    color:white;
+    margin-bottom: -50px;
+    width:100%;
+    font-size: 30px;
+    font-weight: bold;
+
+}
+#precipitation {
+    color:rgb(0,0,100);
+    font-size: 15px;
+    font-weight: bold;
+}
+#humidity {
+    color:rgb(0,0,100);
+    font-size: 15px;
+    font-weight: bold;
+}
+#windDirection {
+    color:rgb(0,0,100);
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .control {
@@ -40,7 +135,7 @@ html,body {
 }
 .c_input img {
     position:absolute;
-    margin-top:80%;
+    margin-top:70%;
     filter:opacity(80%);
     width:10%;
     height:10%;
@@ -99,7 +194,17 @@ input[type="range"]::-webkit-slider-container {
     overflow: hidden;
 }
 
-.move-up {
-    transform: translateY(-100%);
+
+
+
+.move-left {
+    transform: translateX(-100%);
     transition: transform 1s;
 }
+
+.move-right {
+    transform: translateX(100%);
+    transition: transform 1s;
+}
+
+

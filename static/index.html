@@ -4,15 +4,46 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<script src="../static/index.js" ></script>
+		<script src="../static/city_areaid.js" ></script>
 		<link rel="stylesheet" type="text/css" href="../static/index.css">
 	</head>
 	<body>
 		<div class="foot">
 			<div class="panel" id="page01">
+				<div class="datetime">
+					<div id="datetime_container">
+						<div class="datetime_text" id="hours">00</div>
+						<div class="datetime_text" id="minutes">00</div>
+						<div class="datetime_text" id="seconds">00</div>
+					</div>
+					<div class="date_text" id="date">2024年3月2日，星期六</div>
+				</div>
+				<div class="wininfo">wininfo</div>
+				<div class="weather">
+					<div class="cur_weather">
+						<div id="curTemperature">20.0℃</div>
+						<div id="precipitation"><br>降水</br>0mm</div>
+						<div id="humidity"><br>相对湿度</br>83%</div>
+						<div id="windDirection"><br>风向</br>东北风,微风</div>
+					</div>
+					<div class="days_weatherC">
+						<div class="days_weather" id="00">1</div>
+						<div class="days_weather" id="01">2</div>
+						<div class="days_weather" id="02"></div>
+						<div class="days_weather" id="03"></div>
+						<div class="days_weather" id="04"></div>
+						<div class="days_weather" id="05"></div>
+						<div class="days_weather" id="06"></div>
+
+					</div>
+
+				</div>
+			</div>
+			<div class="panel" id="page02">
 				<div class="control" id="volume_control">
 					<div class="c_input">
 						<input class="wv_input" value=20 type="range"  min="0" max="100">
-						<img src="../static/icon/volume.svg1">
+						<img src="../static/icon/volume.svg">
 					</div>
 					<div class="c_button">
 						<button>-</button>
@@ -25,33 +56,39 @@
 					</div>
 				</div>
 				<div class="control" id="mic_control">
-					<div class="test">
+					<div class="c_input">
 						<input class="wv_input" value=20 type="range"  min="0" max="100">
+						<img src="../static/icon/volume.svg">
 					</div>
-
-				</div>
-				<div class="control" id="brightness_control">
-					<div>
-						<input class="wv_input" value=20 type="range"  min="0" max="100">
+					<div class="c_button">
+						<button>-</button>
+						<button>+</button>
 					</div>
-
-					<div>
-						<button>VD</button>
-						<button>VU</button>
-					</div>
-					<div>
+					<div class="c_ul">
 						<ul>
-							<li>deviceI</li>
+							<li value="iiiiidddddd">麦克风(HyperX Cloud Flight Wireless Headset)</li>
 						</ul>
 					</div>
-
 				</div>
-
-
+				<div class="control" id="volumbrightness_controle_control">
+					<div class="c_input">
+						<input class="wv_input" value=20 type="range"  min="0" max="100">
+						<img src="../static/icon/volume.svg">
+					</div>
+					<div class="c_button">
+						<button>-</button>
+						<button>+</button>
+					</div>
+					<div class="c_ul">
+						<ul>
+							<li value="iiiiidddddd">麦克风(HyperX Cloud Flight Wireless Headset)</li>
+						</ul>
+					</div>
+				</div>
 			</div>
-			<div class="panel" id="page02">222</div>
-			<div class="panel" id="page03">333</div>
+			<div class="panel" id="page03">
+				<h1>333</h1>
+			</div>
 		</div>
-
 	</body>
 </html>
