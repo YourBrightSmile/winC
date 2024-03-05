@@ -1,9 +1,13 @@
 #!/bin/python3
 import asyncio
 import tornado
+import sys
+import os
+pathS = []
+pathS.append(os.path.dirname(__file__)+'/../')
+sys.path.extend(pathS)
 
 from lib import otherTools
-
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
