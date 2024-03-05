@@ -2,6 +2,8 @@
 import asyncio
 import tornado
 
+from lib import otherTools
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -15,9 +17,12 @@ class SetHandler(tornado.web.RequestHandler):
         pass
 
 
+
 class GetHandler(tornado.web.RequestHandler):
     def get(self):
-        pass
+        print(otherTools.getWeather().encode())
+        self.write(otherTools.getWeather().encode())
+
 
 
 def make_app():

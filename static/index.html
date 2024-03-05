@@ -3,8 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<script src="../static/jquery-3.7.1.min.js" ></script>
+		<script src="../static/jslib.js" ></script>
 		<script src="../static/index.js" ></script>
-		<script src="../static/city_areaid.js" ></script>
 		<link rel="stylesheet" type="text/css" href="../static/index.css">
 	</head>
 	<body>
@@ -21,23 +22,58 @@
 				<div class="wininfo">wininfo</div>
 				<div class="weather">
 					<div class="cur_weather">
-						<div id="curTemperature">20.0℃</div>
-						<div id="precipitation"><br>降水</br>0mm</div>
-						<div id="humidity"><br>相对湿度</br>83%</div>
-						<div id="windDirection"><br>风向</br>东北风,微风</div>
+						<div id="daysCurr_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+						<div id="currTemperature">20℃</div>
+						<div id="precipitation">降水<br></br>0mm</div>
+						<div id="wind"><br>东北风<br></br>3~4级</div>
 					</div>
 					<div class="days_weatherC">
-						<div class="days_weather" id="00">1</div>
-						<div class="days_weather" id="01">2</div>
-						<div class="days_weather" id="02"></div>
-						<div class="days_weather" id="03"></div>
-						<div class="days_weather" id="04"></div>
-						<div class="days_weather" id="05"></div>
-						<div class="days_weather" id="06"></div>
-
+						<div class="days_weather" >
+							<div class="days_range" id="days00_range">20℃/18℃</div>
+							<div id="days00_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days00_desc">多云转晴</div>
+							<div id="days00_date">03/07</div>
+						</div>
+						<div class="days_weather">
+							<div class="days_range" id="days01_range">20℃/18℃</div>
+							<div id="days01_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days01_desc">多云</div>
+							<div id="days01_date">03/07</div>
+						</div>
+						<div class="days_weather">
+							<div class="days_range" id="days02_range">20℃/18℃</div>
+							<div id="days02_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days02_desc">多云转晴</div>
+							<div id="days02_date">03/07</div>
+						</div>
+						<div class="days_weather" >
+							<div class="days_range" id="days03_range">20℃/18℃</div>
+							<div id="days03_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days03_desc">多云转晴</div>
+							<div id="days03_date">03/07</div>
+						</div>
+						<div class="days_weather" >
+							<div class="days_range" id="days04_range">20℃/18℃</div>
+							<div id="days04_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days04_desc">多云转晴</div>
+							<div id="days04_date">03/07</div>
+						</div>
+						<div class="days_weather" >
+							<div class="days_range" id="days05_range">20℃/18℃</div>
+							<div id="days05_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days05_desc">多云转晴</div>
+							<div id="days05_date">03/07</div>
+						</div>
+						<div class="days_weather" >
+							<div class="days_range" id="days06_range">20℃/18℃</div>
+							<div id="days06_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
+							<div id="days06_desc">多云转晴</div>
+							<div id="days06_date">03/07</div>
+						</div>
 					</div>
 
 				</div>
+
 			</div>
 			<div class="panel" id="page02">
 				<div class="control" id="volume_control">
@@ -49,10 +85,11 @@
 						<button>-</button>
 						<button>+</button>
 					</div>
-					<div class="c_ul">
-						<ul>
-							<li value="iiiiidddddd">麦克风(HyperX Cloud Flight Wireless Headset)</li>
-						</ul>
+					<div class="c_select">
+						<select>
+							<option value="iiiiidddddd">麦克风(HyperX Cloud Flight Wireless Headset)</option>
+							<option value="iiiiidddddd">麦克风(HyperX Cloud Flight Wireless Headset)</option>
+						</select>
 					</div>
 				</div>
 				<div class="control" id="mic_control">

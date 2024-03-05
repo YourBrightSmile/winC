@@ -8,9 +8,9 @@ import re
 def getWeather():
     weatherUrl = "https://weather.cma.cn/api/weather/view?stationid="
     resp = requests.get(weatherUrl)
-    if resp:
-        weatherData = json.loads(resp.content.decode('utf-8'))
-        return weatherData
+    if resp.status_code == 200:
+        # weatherData = json.loads(resp.content.decode('utf-8'))
+        return resp.content.decode('utf-8')
         #weatherData['data']['daily'][0]['date']
     else:
         pass

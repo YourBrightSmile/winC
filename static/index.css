@@ -4,6 +4,7 @@
 	list-style: none;
 	/*文本装饰  如超链接下划线*/
 	text-decoration: none;
+
 }
 html,body {
     width:100%;
@@ -26,9 +27,10 @@ html,body {
     width:100%;
     height:100%;
     flex:0 0 100%;
+    overflow:hide;
 }
 #page01 {
-    backdrop-filter: blur(2px);
+    background: rgb(0,0,0,0.5);
 }
 .wininfo {
     float:left;
@@ -41,7 +43,7 @@ html,body {
     width:20%;
     height:70%;
     position:absolute;
-
+    backdrop-filter: blur(1px);
 }
 #datetime_container {
     position:absolute;
@@ -69,58 +71,94 @@ html,body {
     width:100%;
     height:30%;
     display:flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 0;
+
 }
+
 .cur_weather {
     width:20%;
     height:100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction：colum;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    backdrop-filter: blur(1px);
+}
+.cur_weather div {
+    color:white;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 10px;
+    margin:auto;
+    height:50%;
+    width:50%;
+}
+#daysCurr_img {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0.4) translateX(50%);
+
+}
+#currTemperature {
+    font-size: 20px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(-20%);
+}
+
+#precipitation {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:40%;
+}
+#wind {
+    height:40%;
 }
 .days_weatherC {
     width:80%;
     height:100%;
-    display:flex;
-    justify-content: space-between;
+    display: flex;
 }
 .days_weather {
     width:100%;
     height:100%;
-}
-.cur_weather {
     display:flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction：colum;
+    justify-content: center;
     align-items: center;
-    text-align:center;
+    overflow: hidden;
 }
-#curTemperature {
+.days_weather div{
     color:white;
-    margin-bottom: -50px;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
     width:100%;
-    font-size: 30px;
-    font-weight: bold;
+    text-align:center;
+    white-space: nowrap;
+}
+.days_weather div img {
+    transform: scale(0.4);
+    margin-top:-40px;
+    margin-bottom:-40px;
+    margin-left:-13px;
+}
+.days_range {
+    margin-top:10px;
+}
 
-}
-#precipitation {
-    color:rgb(0,0,100);
-    font-size: 15px;
-    font-weight: bold;
-}
-#humidity {
-    color:rgb(0,0,100);
-    font-size: 15px;
-    font-weight: bold;
-}
-#windDirection {
-    color:rgb(0,0,100);
-    font-size: 15px;
-    font-weight: bold;
-}
 
 .control {
     position:relative;
-    margin-top:5%;
+    margin-top:3%;
     width:33%;
     height:100%;
     float:left;
@@ -153,28 +191,21 @@ html,body {
     filter:opacity(70%);
     float:left;
 }
-.c_ul{
-    width:100%;
-    height:10%;
-    background:gray;
-    text-align: center;
-}
 
 input[type="range"] {
    -webkit-appearance: none;
    appearance: none;
    writing-mode:vertical-lr;
    background: transparent;
+   backdrop-filter: blur(4px);
    cursor: pointer;
    height:100%;
    width:50%;
-
 }
 
 /* slider track */
 input[type="range"]::-webkit-slider-runnable-track {
    background:rgba(0,0,0,0.5);
-   border-radius: 0.5rem;
    width:100%;
 
 }
@@ -185,7 +216,6 @@ input[type="range"]::-webkit-slider-thumb {
    appearance: none;
    /*custom styles*/
    border-image: linear-gradient(rgba(255,255,255,0.8),rgba(255,255,255,0.1)) 1 fill / 8 20 8 0 / 0 0 100vw 0; /*绘制元素外矩形*/
-   border-radius: 1rem;
    height: 0.1em;
    width: 100%;
 }
@@ -193,18 +223,21 @@ input[type="range"]::-webkit-slider-container {
     /*其他样式*/
     overflow: hidden;
 }
-
-
-
-
-.move-left {
-    transform: translateX(-100%);
-    transition: transform 1s;
+.c_select {
+    width:100%;
+    height:20%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.move-right {
-    transform: translateX(100%);
-    transition: transform 1s;
+.c_select select {
+    width:80%;
+    height:50%;
+    border:0;
+    background:rgba(0,0,0,0.3);
 }
+
+
 
 
