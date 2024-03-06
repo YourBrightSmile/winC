@@ -4,7 +4,7 @@ import json
 import os
 import sys
 import tornado
-from tornado.escape import json_decode
+from tornado.escape import json_decode,json_encode
 
 pathS = [os.path.dirname(__file__) + '/../', os.path.dirname(__file__) + '/../lib']
 print("libs", pathS)
@@ -44,7 +44,8 @@ class GetInfoHandler(tornado.web.RequestHandler):
         except Exception as e:
             print("GetInfoHandler Post Exception:", e)
         self.set_header('Content-Type', 'application/json')
-        self.write(json.dumps(str(postResp)))
+
+        self.write(json_encode(postResp))
         print('GetInfoHandler Post End')
 
 

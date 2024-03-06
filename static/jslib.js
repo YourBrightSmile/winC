@@ -27,9 +27,9 @@ function updateTimeTextColort(){
     document.getElementById("date").style.color ='rgb(' + Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
 }
 
-function updateWeatherValue(data){
+function updateWeatherValue(resp){
     document.querySelector("#daysCurr_img > img");
-    document.querySelector("#currTemperature").innerHTML=data['data']['now']['temperature'];
+    document.querySelector("#currTemperature").innerHTML=resp['data']['now']['temperature'];
     document.querySelector("#precipitation");
     document.querySelector("#wind");
     for (var i=0;i<7;i++){
@@ -39,7 +39,8 @@ function updateWeatherValue(data){
         document.querySelector("#days0"+i+"_date");
     };
 }
-function updateControlPanel(){
+function updateControlPanel(resp){
+    document.querySelector("#brightness_control > div.c_input > input").value =  resp['getMonitorsAndBrightness']['None Generic Monitor'];
     document.querySelector("#volume_control > div.c_input > input");
     document.querySelector("#volume_control > div.c_select > select");
     document.querySelector("#mic_control > div.c_input > input");
@@ -59,10 +60,16 @@ function getInitInfo(params){
         type: "post",
         dataType: "json",
         success: function(res) {
-//            updateWeatherValue(JSON.parse(res['getWeather']))
-            console.log(res)
-            console.log(res['getMonitorsAndBrightness'])
-            //document.querySelector("#currTemperature").innerHTML=JSON.parse(res['getWeather'])['data']['now']['temperature']
+                for (let key in res){
+                    console.log(res[key])
+                    for (let key1 in res[key]){
+                        console.log(res[key][key1])
+                    }
+                }
+                console.log(res['getMonitorsAndBrightness']['None Generic Monitor'])
+//                updateWeatherValue(resp)
+//                updateControlPanel(resp);
+
         }
     });
 }
