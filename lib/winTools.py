@@ -18,7 +18,7 @@ def getMonitorsAndBrightness():
     mons = sbc.list_monitors()
     for mon in mons:
         try:
-            mab[mon] = sbc.get_brightness(mon)
+            mab[mon] = sbc.get_brightness(mon)[0]
         except Exception as e:
             print("except Exception:", e)
     return mab

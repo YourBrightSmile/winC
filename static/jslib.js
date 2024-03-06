@@ -27,4 +27,49 @@ function updateTimeTextColort(){
     document.getElementById("date").style.color ='rgb(' + Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
 }
 
+function updateWeatherValue(data){
+    document.querySelector("#daysCurr_img > img");
+    document.querySelector("#currTemperature").innerHTML=data['data']['now']['temperature'];
+    document.querySelector("#precipitation");
+    document.querySelector("#wind");
+    for (var i=0;i<7;i++){
+        document.querySelector("#days0"+i+"_range");
+        document.querySelector("#days0"+i+"_img > img");
+        document.querySelector("#days0"+i+"_desc");
+        document.querySelector("#days0"+i+"_date");
+    };
+}
+function updateControlPanel(){
+    document.querySelector("#volume_control > div.c_input > input");
+    document.querySelector("#volume_control > div.c_select > select");
+    document.querySelector("#mic_control > div.c_input > input");
+    document.querySelector("#mic_control > div.c_select > select");
+    document.querySelector("#brightness_control > div.c_input > input");
+    document.querySelector("#brightness_control > div.c_select > select");
+
+}
+
+//获取所有信息
+function getInitInfo(params){
+    var resp;
+    //ajax
+    $.ajax({
+        url: "/getInfo",
+        data: params,
+        type: "post",
+        dataType: "json",
+        success: function(res) {
+//            updateWeatherValue(JSON.parse(res['getWeather']))
+            console.log(res)
+            console.log(res['getMonitorsAndBrightness'])
+            //document.querySelector("#currTemperature").innerHTML=JSON.parse(res['getWeather'])['data']['now']['temperature']
+        }
+    });
+}
+//testparams = {'infoTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
+//testparams = {'infoTypes':['getMonitorsAndBrightness']};getInitInfo(JSON.stringify(testparams))
+function adjustWinSetup(set){
+
+}
+
 
