@@ -113,12 +113,11 @@ html,body {
 }
 
 #precipitation {
-    display:flex;
-    justify-content: center;
-    align-items: center;
+    margin-right:-5%;
     height:40%;
 }
 #wind {
+    margin-left:-5%;
     height:40%;
 }
 .days_weatherC {

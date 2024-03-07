@@ -9,7 +9,7 @@ from pycaw.utils import AudioUtilities
 import comtypes
 import ctypes
 import screen_brightness_control as sbc
-import policyconfig as pc
+from lib import policyconfig as pc
 import pyautogui
 
 
@@ -65,7 +65,7 @@ def winMicrophoneAdjust(volumeSize, method):
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
 
 
-def getAudioDevices(direction="in", state=DEVICE_STATE.ACTIVE.value):
+def getAudioDeviceVolume(direction="in", state=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
     if direction == "in":

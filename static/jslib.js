@@ -26,32 +26,66 @@ function updateTimeTextColort(){
     document.getElementById("seconds").style.color ='rgb(' + Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
     document.getElementById("date").style.color ='rgb(' + Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
 }
-
+function getDataF(){
+    var now = new Date();
+    fnTmp = (d) => ('0'+d).substr(-2)
+    nowDate = now.getFullYear()+'/'+fnTmp(now.getMonth()+1)+'/'+fnTmp(now.getDate())
+}
 function updateWeatherValue(resp){
-    document.querySelector("#daysCurr_img > img");
-    document.querySelector("#currTemperature").innerHTML=resp['data']['now']['temperature'];
-    document.querySelector("#precipitation");
-    document.querySelector("#wind");
+    var now = new Date();
+    hour = now.getHours();
+    var urlIcon = "https://weather.cma.cn/static/img/w/icon/w"
+    document.querySelector("#daysCurr_img > img").src=urlIcon+resp['getWeather']['data']['daily'][0]['dayCode']+'.png';
+    document.querySelector("#currTemperature").innerHTML=resp['getWeather']['data']['now']['temperature'];
+    document.querySelector("#precipitation").innerHTML='降水<br><br>'+resp['getWeather']['data']['now']['precipitation']+'mm';
+    document.querySelector("#wind").innerHTML=resp['getWeather']['data']['now']['windDirection']+'<br><br>'+resp['getWeather']['data']['now']['windScale'];
     for (var i=0;i<7;i++){
-        document.querySelector("#days0"+i+"_range");
-        document.querySelector("#days0"+i+"_img > img");
-        document.querySelector("#days0"+i+"_desc");
-        document.querySelector("#days0"+i+"_date");
+        document.querySelector("#days0"+i+"_range").innerHTML=resp['getWeather']['data']['daily'][i]['high']+'℃/'+resp['getWeather']['data']['daily'][i]['low']+'℃'
+        ;
+        if (hour<18){
+            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['getWeather']['data']['daily'][i]['dayCode']+'.png';
+            document.querySelector("#days0"+i+"_desc").innerHTML=resp['getWeather']['data']['daily'][i]['dayText'];
+            document.querySelector("#days0"+i+"_date").innerHTML=resp['getWeather']['data']['daily'][i]['date'].substr(5);
+        }else{
+            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['getWeather']['data']['daily'][i]['nightCode']+'.png';
+            document.querySelector("#days0"+i+"_desc").innerHTML=resp['getWeather']['data']['daily'][i]['nightText'];
+            document.querySelector("#days0"+i+"_date").innerHTML=resp['getWeather']['data']['daily'][i]['date'].substr(5);
+        };
+
+
     };
 }
 function updateControlPanel(resp){
-    document.querySelector("#brightness_control > div.c_input > input").value =  resp['getMonitorsAndBrightness']['None Generic Monitor'];
+
     document.querySelector("#volume_control > div.c_input > input");
     document.querySelector("#volume_control > div.c_select > select");
+
     document.querySelector("#mic_control > div.c_input > input");
     document.querySelector("#mic_control > div.c_select > select");
-    document.querySelector("#brightness_control > div.c_input > input");
+
+    document.querySelector("#brightness_control > div.c_input > input").value =  resp['getMonitorsAndBrightness']['None Generic Monitor'];
     document.querySelector("#brightness_control > div.c_select > select");
 
 }
 
 //获取所有信息
-function getInitInfo(params){
+function getInitInfo(){
+    var resp;
+    var params = {'infoTypes':['getWeather','getMonitorsAndBrightness']}
+    //ajax
+    $.ajax({
+        url: "/getInfo",
+        data: JSON.stringify(params),
+        type: "post",
+        dataType: "json",
+        success: function(res) {
+//                updateWeatherValue(res);
+//                updateControlPanel(res);
+                console.log(res)
+        }
+    });
+}
+function getInfo(params){
     var resp;
     //ajax
     $.ajax({
@@ -60,19 +94,13 @@ function getInitInfo(params){
         type: "post",
         dataType: "json",
         success: function(res) {
-                for (let key in res){
-                    console.log(res[key])
-                    for (let key1 in res[key]){
-                        console.log(res[key][key1])
-                    }
-                }
-                console.log(res['getMonitorsAndBrightness']['None Generic Monitor'])
-//                updateWeatherValue(resp)
-//                updateControlPanel(resp);
-
+//                updateWeatherValue(res);
+//                updateControlPanel(res);
+                console.log(res)
         }
     });
 }
+
 //testparams = {'infoTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
 //testparams = {'infoTypes':['getMonitorsAndBrightness']};getInitInfo(JSON.stringify(testparams))
 function adjustWinSetup(set){
