@@ -90,10 +90,12 @@ def getAudioDeviceVolume(direction="in", state=DEVICE_STATE.ACTIVE.value):
         if dev is not None:
             if not ": None" in str(AudioUtilities.CreateDevice(dev)):
                 devices.append(AudioUtilities.CreateDevice(dev))
-    deviceID = {}
+    deviceIDName = {}
     for device in devices:
-        deviceID[device.id] = device
-    return deviceID
+        deviceIDName['id'] = device.id
+        deviceIDName['name'] = device.FriendlyName
+        deviceIDName['volume'] = device._volume
+    return deviceIDName
 
 
 def switchIODevice(deviceId, role):
