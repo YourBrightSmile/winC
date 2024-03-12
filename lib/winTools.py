@@ -38,13 +38,8 @@ def winVolumeAdjust(volumeSize, method):
     devices = AudioUtilities.GetSpeakers()
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     volume = cast(interface, POINTER(IAudioEndpointVolume))
-    # vol_range = volume.GetVolumeRange()
-    cur_volume = volume.GetMasterVolumeLevel()
-    isMute = volume.GetMute()
-
-    # volume.GetMute()
-    # volume.SetMute(1, None)
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
+    volume.SetMute()
 
 
 def winMicrophoneAdjust(volumeSize, method):
@@ -56,19 +51,38 @@ def winMicrophoneAdjust(volumeSize, method):
     devices = AudioUtilities.GetMicrophone()
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     volume = cast(interface, POINTER(IAudioEndpointVolume))
-    # vol_range = volume.GetVolumeRange()
-    cur_volume = volume.GetMasterVolumeLevel()
-    isMute = volume.GetMute()
-
-    # volume.GetMute()
-    # volume.SetMute(1, None)
     volume.SetMasterVolumeLevelScalar(volumeSize, None)
+    volume.SetMute()
 
 
-def getAudioDeviceVolume(direction="in", state=DEVICE_STATE.ACTIVE.value):
+def getAudioVolumeInfo():
+    volumeInfo = {}
+    speakers = AudioUtilities.GetSpeakers()
+    if speakers:
+        tmp = {}
+        interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar()*100)
+        tmp['isMute'] = volume.GetMute()
+        volumeInfo['speaker'] = tmp
+
+    microphone = AudioUtilities.GetMicrophone()
+    if microphone:
+        tmp = {}
+        interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar()*100)
+        tmp['isMute'] = volume.GetMute()
+        volumeInfo['microphone'] = tmp
+    return volumeInfo
+
+
+def getAudioDevicesID(direction="all", state=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
-    if direction == "in":
+    if direction == "all":
+        Flow = EDataFlow.eAll.value  # 2
+    elif direction == "in":
         Flow = EDataFlow.eCapture.value  # 1
     else:
         Flow = EDataFlow.eRender.value  # 0
@@ -90,13 +104,23 @@ def getAudioDeviceVolume(direction="in", state=DEVICE_STATE.ACTIVE.value):
         if dev is not None:
             if not ": None" in str(AudioUtilities.CreateDevice(dev)):
                 devices.append(AudioUtilities.CreateDevice(dev))
-    deviceIDName = {}
+    devicesID = {}
+    # for device in devices:
+    #     tmp = {}
+    #     tmp['id'] = device.id
+    #     tmp['state'] = device.state.value
+    #     deviceInfo[device.FriendlyName] = tmp
     for device in devices:
-        deviceIDName['id'] = device.id
-        deviceIDName['name'] = device.FriendlyName
-        deviceIDName['volume'] = device._volume
-    return deviceIDName
+        devicesID[device.FriendlyName] = device.id
+    return devicesID
+    #TODO 添加in out字段
 
+def getAudioInfo():
+    audioInfo = getAudioVolumeInfo()
+    nameid = getAudioDevicesID("all")
+    if nameid:
+        audioInfo['deviceInfo'] = nameid
+        return audioInfo
 
 def switchIODevice(deviceId, role):
     policy_config = comtypes.CoCreateInstance(
@@ -128,6 +152,8 @@ def unlockWindows():
         time.sleep(1)
     except:
         pass
+
+
 # time.sleep(10)
 # unlockWindows()
 
@@ -144,4 +170,6 @@ def unlockWindows():
 #     print(i, inD[i])
 # for o in outD:
 #     print(o)
-# a=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)
+# c=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)
+a = AudioUtilities.GetAllDevices()
+a[1].state.value

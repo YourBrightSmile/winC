@@ -1,8 +1,8 @@
 #!/bin/python3
 from lib.otherTools import getWeather
-from lib.winTools import getMonitorsAndBrightness, getAudioDeviceVolume
+from lib.winTools import getMonitorsAndBrightness, getAudioInfo
 
 infoMethodDict = {'getWeather': getWeather,
-                  'getAudioDeviceVolume': getAudioDeviceVolume,
+                  'getAudioInfo': getAudioInfo,
                   'getMonitorsAndBrightness': getMonitorsAndBrightness,
                   }
