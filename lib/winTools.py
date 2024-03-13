@@ -77,6 +77,7 @@ def getAudioVolumeInfo():
     return volumeInfo
 
 def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
+    devices = []
     # for all use EDataFlow.eAll.value
     if direction == "all":
         Flow = EDataFlow.eAll.value  # 2
@@ -90,39 +91,30 @@ def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
         IMMDeviceEnumerator,
         comtypes.CLSCTX_INPROC_SERVER)
     collection = deviceEnumerator.EnumAudioEndpoints(Flow, state)
-    return collection
+    if collection:
+        count = collection.GetCount()
+        for i in range(count):
+            dev = collection.Item(i)
+            if dev is not None:
+                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
+                    devices.append(AudioUtilities.CreateDevice(dev))
+    return devices
 
 def getAudioDevicesID():
     devicesIn = enumAudioDevices('in')
     devicesOut = enumAudioDevices('out')
-    din = []
-    dout = []
-    if devicesIn:
-        count = devicesIn.GetCount()
-        for i in range(count):
-            dev = devicesIn.Item(i)
-            if dev is not None:
-                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
-                    din.append(AudioUtilities.CreateDevice(dev))
-    if devicesOut:
-        count = devicesOut.GetCount()
-        for i in range(count):
-            dev = devicesOut.Item(i)
-            if dev is not None:
-                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
-                    dout.append(AudioUtilities.CreateDevice(dev))
 
 
     devicesID = {}
-    if len(din) > 0:
-        for device in din:
+    if len(devicesIn) > 0:
+        for device in devicesIn:
             tmp = {}
             tmp['id'] = device.id
             tmp['class'] = "in"
             devicesID[device.FriendlyName] = tmp
 
-    if len(dout) > 0:
-        for device in dout:
+    if len(devicesOut) > 0:
+        for device in devicesOut:
             tmp = {}
             tmp['id'] = device.id
             tmp['class'] = "out"
