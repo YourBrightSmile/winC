@@ -76,9 +76,7 @@ def getAudioVolumeInfo():
         volumeInfo['microphone'] = tmp
     return volumeInfo
 
-
-def getAudioDevicesID(direction="all", state=DEVICE_STATE.ACTIVE.value):
-    devices = []
+def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
     # for all use EDataFlow.eAll.value
     if direction == "all":
         Flow = EDataFlow.eAll.value  # 2
@@ -91,35 +89,53 @@ def getAudioDevicesID(direction="all", state=DEVICE_STATE.ACTIVE.value):
         CLSID_MMDeviceEnumerator,
         IMMDeviceEnumerator,
         comtypes.CLSCTX_INPROC_SERVER)
-    if deviceEnumerator is None:
-        return devices
-
     collection = deviceEnumerator.EnumAudioEndpoints(Flow, state)
-    if collection is None:
-        return devices
+    return collection
 
-    count = collection.GetCount()
-    for i in range(count):
-        dev = collection.Item(i)
-        if dev is not None:
-            if not ": None" in str(AudioUtilities.CreateDevice(dev)):
-                devices.append(AudioUtilities.CreateDevice(dev))
+def getAudioDevicesID():
+    devicesIn = enumAudioDevices('in')
+    devicesOut = enumAudioDevices('out')
+    din = []
+    dout = []
+    if devicesIn:
+        count = devicesIn.GetCount()
+        for i in range(count):
+            dev = devicesIn.Item(i)
+            if dev is not None:
+                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
+                    din.append(AudioUtilities.CreateDevice(dev))
+    if devicesOut:
+        count = devicesOut.GetCount()
+        for i in range(count):
+            dev = devicesOut.Item(i)
+            if dev is not None:
+                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
+                    dout.append(AudioUtilities.CreateDevice(dev))
+
+
     devicesID = {}
-    # for device in devices:
-    #     tmp = {}
-    #     tmp['id'] = device.id
-    #     tmp['state'] = device.state.value
-    #     deviceInfo[device.FriendlyName] = tmp
-    for device in devices:
-        devicesID[device.FriendlyName] = device.id
+    if len(din) > 0:
+        for device in din:
+            tmp = {}
+            tmp['id'] = device.id
+            tmp['class'] = "in"
+            devicesID[device.FriendlyName] = tmp
+
+    if len(dout) > 0:
+        for device in dout:
+            tmp = {}
+            tmp['id'] = device.id
+            tmp['class'] = "out"
+            devicesID[device.FriendlyName] = tmp
+
     return devicesID
-    #TODO 添加in out字段
+
 
 def getAudioInfo():
     audioInfo = getAudioVolumeInfo()
-    nameid = getAudioDevicesID("all")
-    if nameid:
-        audioInfo['deviceInfo'] = nameid
+    deviceInfo = getAudioDevicesID()
+    if deviceInfo and audioInfo:
+        audioInfo['audioInfo'] = deviceInfo
         return audioInfo
 
 def switchIODevice(deviceId, role):
@@ -171,5 +187,3 @@ def unlockWindows():
 # for o in outD:
 #     print(o)
 # c=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)
-a = AudioUtilities.GetAllDevices()
-a[1].state.value
