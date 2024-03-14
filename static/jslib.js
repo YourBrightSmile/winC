@@ -71,7 +71,7 @@ function updateControlPanel(resp){
 //获取所有信息
 function getInitInfo(){
     var resp;
-    var params = {'infoTypes':['getWeather','getMonitorsAndBrightness']}
+    var params = {'getTypes':['getWeather','getMonitorsAndBrightness','getAudioInfo']}
     //ajax
     $.ajax({
         url: "/getInfo",
@@ -85,6 +85,10 @@ function getInitInfo(){
         }
     });
 }
+
+//testparams = {'infoTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
+//testparams = {'infoTypes':['getMonitorsAndBrightness']};getInfo(JSON.stringify(testparams))
+//testparams = {'infoTypes':['getAudioInfo']};getInfo(JSON.stringify(testparams))
 function getInfo(params){
     var resp;
     //ajax
@@ -97,14 +101,33 @@ function getInfo(params){
 //                updateWeatherValue(res);
 //                updateControlPanel(res);
                 console.log(res)
+                console.log(res['getAudioInfo']['audioInfo'])
+
         }
     });
 }
 
-//testparams = {'infoTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
-//testparams = {'infoTypes':['getMonitorsAndBrightness']};getInitInfo(JSON.stringify(testparams))
-function adjustWinSetup(set){
+//param: mute/nomute/1-100
+//testparams = {'setType':'winVolumeAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+//testparams = {'setType':'winMicrophoneAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+//param:displayname,brightness:1-100
+//testparams = {'setType':'setMonitorBrightness','setParams':{'display':'Lenovo 40A0','brightness':'50'}};setWin(JSON.stringify(testparams))
+function setWin(params){
+    var resp;
+    //ajax
 
+    $.ajax({
+        url: "/setWin",
+        data: params,
+        type: "post",
+        dataType: "json",
+        success: function(res) {
+//                updateWeatherValue(res);
+//                updateControlPanel(res);
+                console.log(res)
+
+        }
+    });
 }
 
 

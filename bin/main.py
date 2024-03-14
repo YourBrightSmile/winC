@@ -24,8 +24,17 @@ class SetHandler(tornado.web.RequestHandler):
         pass
 
     def post(self):
-        pass
-
+        postBody = json_decode(self.request.body)
+        try:
+            if len(postBody)>0:
+                funcName = postBody['setType']
+                params = postBody['setParams']
+                infoMethodDict[funcName](params)
+            else:
+                print("Post SetHandler testparams error")
+        except Exception as e:
+            print("Post SetHandler  Exception:", e)
+        print('Post SetHandler  End......')
 
 class GetInfoHandler(tornado.web.RequestHandler):
     def get(self):
@@ -37,23 +46,22 @@ class GetInfoHandler(tornado.web.RequestHandler):
         try:
             if postBody:
                 for key, value in postBody.items():
-                    if key == 'infoTypes':
+                    if key == 'getTypes':
                         for infoType in postBody[key]:
                             postResp[infoType] = infoMethodDict[infoType]()
                             print("PPP", postResp[infoType])
         except Exception as e:
-            print("GetInfoHandler Post Exception:", e)
+            print("Post GetInfoHandler  Exception:", e)
         self.set_header('Content-Type', 'application/json')
-
         self.write(json_encode(postResp))
-        print('GetInfoHandler Post End')
+        print('Post GetInfoHandler  End......')
 
 
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),
-        (r"/set", SetHandler),
+        (r"/setWin", SetHandler),
         (r"/getInfo", GetInfoHandler),
     ])
 

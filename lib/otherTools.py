@@ -1,8 +1,6 @@
 #!/bin/python3
 import json
-
 import requests
-import re
 
 
 def getWeather():

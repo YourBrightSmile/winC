@@ -11,7 +11,12 @@ import ctypes
 import screen_brightness_control as sbc
 from lib import policyconfig as pc
 import pyautogui
+import clr # the pythonnet module.
+import os
 
+cwdpath = os.getcwd()
+clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
+from OpenHardwareMonitor.Hardware import Computer
 
 def getMonitorsAndBrightness():
     mab = {}
@@ -24,35 +29,47 @@ def getMonitorsAndBrightness():
     return mab
 
 
-def setMonitorBrightness(display, brightness):
+def setMonitorBrightness(params):
+    brightness = params['brightness']
+    display = params['display']
     sbc.set_brightness(brightness, display)
 
 
 # volumeSize 0.01-1.00
-def winVolumeAdjust(volumeSize, method):
+def winVolumeAdjust(params):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
     # volume_down
     # user32.keybd_event(0xAE, 0, 0, 0)
+    param = params['param']
     devices = AudioUtilities.GetSpeakers()
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     volume = cast(interface, POINTER(IAudioEndpointVolume))
-    volume.SetMasterVolumeLevelScalar(volumeSize, None)
-    volume.SetMute()
+    if param == 'mute':
+        volume.SetMute(1, None)
+    elif param == 'nomute':
+        volume.SetMute(0, None)
+    else:
+        volume.SetMasterVolumeLevelScalar(round(int(param) / 100, 2), None)
 
 
-def winMicrophoneAdjust(volumeSize, method):
+def winMicrophoneAdjust(params):
     # user32 = WinDLL("user32")
     # volume_up
     # user32.keybd_event(0xAF, 0, 0, 0)
     # volume_down
     # user32.keybd_event(0xAE, 0, 0, 0)
+    param = params['param']
     devices = AudioUtilities.GetMicrophone()
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     volume = cast(interface, POINTER(IAudioEndpointVolume))
-    volume.SetMasterVolumeLevelScalar(volumeSize, None)
-    volume.SetMute()
+    if param == 'mute':
+        volume.SetMute(1, None)
+    elif param == 'nomute':
+        volume.SetMute(0, None)
+    else:
+        volume.SetMasterVolumeLevelScalar(round(int(param) / 100, 2), None)
 
 
 def getAudioVolumeInfo():
@@ -62,7 +79,7 @@ def getAudioVolumeInfo():
         tmp = {}
         interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
-        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar()*100)
+        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
         tmp['isMute'] = volume.GetMute()
         volumeInfo['speaker'] = tmp
 
@@ -71,10 +88,11 @@ def getAudioVolumeInfo():
         tmp = {}
         interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
-        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar()*100)
+        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
         tmp['isMute'] = volume.GetMute()
         volumeInfo['microphone'] = tmp
     return volumeInfo
+
 
 def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
     devices = []
@@ -100,15 +118,21 @@ def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
                     devices.append(AudioUtilities.CreateDevice(dev))
     return devices
 
+
 def getAudioDevicesID():
     devicesIn = enumAudioDevices('in')
     devicesOut = enumAudioDevices('out')
-
 
     devicesID = {}
     if len(devicesIn) > 0:
         for device in devicesIn:
             tmp = {}
+            defaultDev = AudioUtilities.GetMicrophone()
+            tmp['id'] = device.id
+            if defaultDev.GetId() == device.id:
+                tmp['default'] = 1
+            else:
+                tmp['default'] = 0
             tmp['id'] = device.id
             tmp['class'] = "in"
             devicesID[device.FriendlyName] = tmp
@@ -116,7 +140,12 @@ def getAudioDevicesID():
     if len(devicesOut) > 0:
         for device in devicesOut:
             tmp = {}
+            defaultDev = AudioUtilities.GetSpeakers()
             tmp['id'] = device.id
+            if defaultDev.GetId() == device.id:
+                tmp['default'] = 1
+            else:
+                tmp['default'] = 0
             tmp['class'] = "out"
             devicesID[device.FriendlyName] = tmp
 
@@ -130,6 +159,7 @@ def getAudioInfo():
         audioInfo['audioInfo'] = deviceInfo
         return audioInfo
 
+
 def switchIODevice(deviceId, role):
     policy_config = comtypes.CoCreateInstance(
         pc.CLSID_PolicyConfigClient,
@@ -141,6 +171,21 @@ def switchIODevice(deviceId, role):
 
     policy_config.SetDefaultEndpoint(deviceId, role)
     policy_config.Release()
+
+
+def getWinInfo():
+    c = Computer()
+    c.CPUEnabled = True  # get the Info about CPU
+    c.GPUEnabled = True  # get the Info about GPU
+    c.Open()
+    c.Hardware[0].Update()
+    c.Hardware[1].Update()
+    print(c.Hardware[0].Sensors)
+    print(c.Hardware[0].Sensors[0].Identifier)
+    print(c.Hardware[0].Sensors[0].get_Value())
+    print(c.Hardware[0].Sensors[0].get_Value())
+    print(c.Hardware[1].Sensors[0].get_Name())
+
 
 
 def isWinLocked():
@@ -160,7 +205,6 @@ def unlockWindows():
         time.sleep(1)
     except:
         pass
-
 
 # time.sleep(10)
 # unlockWindows()
