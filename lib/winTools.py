@@ -1,6 +1,8 @@
 #!/bin/python3
 import time
 from ctypes import cast, POINTER
+
+import wmi
 from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
 from pycaw.api.mmdeviceapi import IMMDeviceEnumerator
@@ -11,12 +13,15 @@ import ctypes
 import screen_brightness_control as sbc
 from lib import policyconfig as pc
 import pyautogui
-import clr # the pythonnet module.
+import clr  # the pythonnet module.
 import os
+from lib.winInfoLib import *
 
 cwdpath = os.getcwd()
-clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
-from OpenHardwareMonitor.Hardware import Computer
+clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
+# clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
+# from OpenHardwareMonitor.Hardware import Computer
+
 
 def getMonitorsAndBrightness():
     mab = {}
@@ -173,19 +178,15 @@ def switchIODevice(deviceId, role):
     policy_config.Release()
 
 
-def getWinInfo():
-    c = Computer()
-    c.CPUEnabled = True  # get the Info about CPU
-    c.GPUEnabled = True  # get the Info about GPU
-    c.Open()
-    c.Hardware[0].Update()
-    c.Hardware[1].Update()
-    print(c.Hardware[0].Sensors)
-    print(c.Hardware[0].Sensors[0].Identifier)
-    print(c.Hardware[0].Sensors[0].get_Value())
-    print(c.Hardware[0].Sensors[0].get_Value())
-    print(c.Hardware[1].Sensors[0].get_Name())
-
+def getWinInfoByTypes(isall=0, *types):
+    winInfo = {}
+    if isall:
+        for t in winInfoDict:
+            winInfoDict[t]()
+    else:
+        for t in types:
+            winInfoDict[t]()
+    return winInfo
 
 
 def isWinLocked():
