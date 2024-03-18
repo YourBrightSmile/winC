@@ -1,4 +1,5 @@
 #!/bin/python3
+import pynvml
 import wmi
 
 winInfoDict = ['']
@@ -23,3 +24,4 @@ def getOperatingSystem():
     w.Win32_VideoController()
     # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature-273
     w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature
+    # pynvml.nvmlDeviceGetTemperature(handle, 0)
