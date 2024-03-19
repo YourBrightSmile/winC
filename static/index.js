@@ -1,6 +1,6 @@
 
 
-
+//页面滑动
 var firstX = 0, firstY = 0, endX = 0, endY = 0;//初始化坐标值
 document.addEventListener("touchstart", function (e) {
     firstX = e.targetTouches[0].clientX;
@@ -48,7 +48,6 @@ document.addEventListener("touchend", function (e) {
                     elements[i].style.transform='translateX('+setValue+'%)';
                     elements[i].style.transition='transform 0.5s';
                 }
-
             }
 
         }else {
@@ -59,4 +58,8 @@ document.addEventListener("touchend", function (e) {
     }
 });
 
-window.onload = updateTime;
+
+window.onload = initFunc;
+
+
+

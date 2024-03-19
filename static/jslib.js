@@ -1,3 +1,25 @@
+function initFunc(){
+    updateTime();
+    addEvent();
+//    getInitInfo()
+};
+
+function addEvent(){
+    //control pannel
+    document.querySelector("#volume_control > div.c_input > input").addEventListener('input',function(){
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display':'Lenovo 40A0','brightness':this.value}
+                      };
+        setWin(JSON.stringify(params));
+    });
+
+
+    document.querySelector("#volume_control > div.c_input > img");
+    document.querySelector("#volume_control > div.c_button > button:nth-child(1)");
+    document.querySelector("#volume_control > div.c_button > button:nth-child(2)");
+}
+
+
 function updateTime() {
     days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     var now = new Date(); // 创建Date对象表示当前时间
@@ -57,21 +79,52 @@ function updateWeatherValue(resp){
 }
 function updateControlPanel(resp){
 
-    document.querySelector("#volume_control > div.c_input > input");
-    document.querySelector("#volume_control > div.c_select > select");
+    document.querySelector("#volume_control > div.c_input > input").value = resp['speaker']['volume'];
+    document.querySelector("#mic_control > div.c_input > input").value = resp['microphone']['volume'];
 
-    document.querySelector("#mic_control > div.c_input > input");
-    document.querySelector("#mic_control > div.c_select > select");
+    vDevices = resp['audioInfo'];
+    for (let dev in vDevices){
+        vSelect = document.querySelector("#volume_control > div.c_select > select");
+        mSelect = document.querySelector("#mic_control > div.c_select > select");
 
-    document.querySelector("#brightness_control > div.c_input > input").value =  resp['getMonitorsAndBrightness']['None Generic Monitor'];
-    document.querySelector("#brightness_control > div.c_select > select");
+        if (vDevices[dev]['class'] == 'in'){
+            var opt = document.createElement("option");
+            opt.text = dev;
+            opt.value = vDevices[dev]['id'];
+            if (vDevices[dev]['default'] == 1){
+                opt.selected="selected";
+            };
+            mSelect.appendChild(opt);
+        }else if (vDevices[dev]['class'] == 'out'){
+            var opt = document.createElement("option");
+            opt.text = dev;
+            opt.value = vDevices[dev]['id']
+            if (vDevices[dev]['default'] == 1){
+                opt.selected="selected";
+            };
+            vSelect.appendChild(opt);
+        }
 
+    };
+    mons = resp['monitorInfo'];
+    for (let mon in mons){
+        bSelect = document.querySelector("#brightness_control > div.c_select > select")
+        bSelect.value = resp['monitorInfo'];
+        var opt = document.createElement("option");
+        opt.text = mon;
+        opt.value = mons[mon];
+        console.log(opt.value)
+        bSelect.appendChild(opt);
+    };
+    document.querySelector("#brightness_control > div.c_input > input").value = document.querySelector("#brightness_control > div.c_select > select > option:nth-child(1)").value;
+    document.querySelector("#brightness_control > div.c_select > select > option:nth-child(1)").selected="selected";
 }
 
 //获取所有信息
 function getInitInfo(){
     var resp;
-    var params = {'getTypes':['getWeather','getMonitorsAndBrightness','getAudioInfo']}
+//    var params = {'getTypes':['getWeather','getMonitorsAndBrightness','getAudioInfo']}
+    var params = {'getTypes':['getControlInfo']}
     //ajax
     $.ajax({
         url: "/getInfo",
@@ -79,16 +132,16 @@ function getInitInfo(){
         type: "post",
         dataType: "json",
         success: function(res) {
-//                updateWeatherValue(res);
-//                updateControlPanel(res);
-                console.log(res)
+//                updateWeatherValue(res['getWeather']);
+                updateControlPanel(res['getControlInfo']);
+                console.log("getInitInfo end")
         }
     });
 }
 
-//testparams = {'infoTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
-//testparams = {'infoTypes':['getMonitorsAndBrightness']};getInfo(JSON.stringify(testparams))
-//testparams = {'infoTypes':['getAudioInfo']};getInfo(JSON.stringify(testparams))
+//testparams = {'getTypes':['getWeather']};getInitInfo(JSON.stringify(testparams))
+//testparams = {'getTypes':['getMonitorsAndBrightness']};getInfo(JSON.stringify(testparams))
+//testparams = {'getTypes':['getAudioInfo']};getInfo(JSON.stringify(testparams))
 function getInfo(params){
     var resp;
     //ajax
@@ -100,8 +153,8 @@ function getInfo(params){
         success: function(res) {
 //                updateWeatherValue(res);
 //                updateControlPanel(res);
-                console.log(res)
-                console.log(res['getAudioInfo']['audioInfo'])
+                console.log(res);
+                console.log(res['getAudioInfo']['microphone']['volume']);
 
         }
     });

@@ -17,8 +17,8 @@ import clr  # the pythonnet module.
 import os
 from lib.winInfoLib import *
 
-cwdpath = os.getcwd()
-clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
+# cwdpath = os.getcwd()
+# clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
 # clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
 # from OpenHardwareMonitor.Hardware import Computer
 
@@ -157,11 +157,13 @@ def getAudioDevicesID():
     return devicesID
 
 
-def getAudioInfo():
+def getControlInfo():
     audioInfo = getAudioVolumeInfo()
     deviceInfo = getAudioDevicesID()
-    if deviceInfo and audioInfo:
+    monitorInfo = getMonitorsAndBrightness()
+    if deviceInfo and audioInfo and monitorInfo:
         audioInfo['audioInfo'] = deviceInfo
+        audioInfo['monitorInfo'] = monitorInfo
         return audioInfo
 
 

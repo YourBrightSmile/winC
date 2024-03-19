@@ -17,6 +17,7 @@ html,body {
     position:absolute;
     background:gray;
     background-image:url("./img/tmp.jpg");
+    background-size:contain;
     display:flex;
     overflow:hidden;
 }
@@ -188,6 +189,8 @@ html,body {
     width:50%;
     height:100%;
     filter:opacity(70%);
+    font-size: 30px;
+    font-weight: bold;
     float:left;
 }
 
@@ -235,6 +238,7 @@ input[type="range"]::-webkit-slider-container {
     height:80%;
     border:0;
     color:white;
+    text-align:center;
     background:rgba(0,0,0,0.3);
 }
 

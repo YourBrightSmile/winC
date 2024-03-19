@@ -53,6 +53,7 @@ class GetInfoHandler(tornado.web.RequestHandler):
         except Exception as e:
             print("Post GetInfoHandler  Exception:", e)
         self.set_header('Content-Type', 'application/json')
+        print(json_encode(postResp))
         self.write(json_encode(postResp))
         print('Post GetInfoHandler  End......')
 
