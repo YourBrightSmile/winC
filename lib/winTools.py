@@ -77,28 +77,32 @@ def winMicrophoneAdjust(params):
         volume.SetMasterVolumeLevelScalar(round(int(param) / 100, 2), None)
 
 
-def getAudioVolumeInfo():
+def getAudioVolumeInfo(type):
     volumeInfo = {}
-    speakers = AudioUtilities.GetSpeakers()
-    if speakers:
-        tmp = {}
-        interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
-        tmp['isMute'] = volume.GetMute()
-        volumeInfo['speaker'] = tmp
-
-    microphone = AudioUtilities.GetMicrophone()
-    if microphone:
-        tmp = {}
-        interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
-        tmp['isMute'] = volume.GetMute()
-        volumeInfo['microphone'] = tmp
+    if type == 'all' or type == 'out':
+        speakers = AudioUtilities.GetSpeakers()
+        if speakers:
+            tmp = {}
+            interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+            volume = cast(interface, POINTER(IAudioEndpointVolume))
+            tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
+            tmp['isMute'] = volume.GetMute()
+            volumeInfo['speaker'] = tmp
+    if type == 'all' or type == 'in':
+        microphone = AudioUtilities.GetMicrophone()
+        if microphone:
+            tmp = {}
+            interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+            volume = cast(interface, POINTER(IAudioEndpointVolume))
+            tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
+            tmp['isMute'] = volume.GetMute()
+            volumeInfo['microphone'] = tmp
     return volumeInfo
 
-
+def getAudioOutVolumeInfo():
+    return getAudioVolumeInfo('out')
+def getAudioInVolumeInfo():
+    return getAudioVolumeInfo('in')
 def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
@@ -158,7 +162,7 @@ def getAudioDevicesID():
 
 
 def getControlInfo():
-    audioInfo = getAudioVolumeInfo()
+    audioInfo = getAudioVolumeInfo('all')
     deviceInfo = getAudioDevicesID()
     monitorInfo = getMonitorsAndBrightness()
     if deviceInfo and audioInfo and monitorInfo:
@@ -167,7 +171,7 @@ def getControlInfo():
         return audioInfo
 
 
-def switchIODevice(deviceId, role):
+def switchIODevice(params):
     policy_config = comtypes.CoCreateInstance(
         pc.CLSID_PolicyConfigClient,
         pc.IPolicyConfig,
@@ -176,7 +180,7 @@ def switchIODevice(deviceId, role):
     # Set OutputDevice: policy_config.SetDefaultEndpoint(deviceId, 0)
     # Set IputDevice: policy_config.SetDefaultEndpoint(deviceId, 1)
 
-    policy_config.SetDefaultEndpoint(deviceId, role)
+    policy_config.SetDefaultEndpoint(params['deviceId'], int(params['role']))
     policy_config.Release()
 
 

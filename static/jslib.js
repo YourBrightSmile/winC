@@ -6,17 +6,193 @@ function initFunc(){
 
 function addEvent(){
     //control pannel
+
+    //param: mute/nomute/1-100
+//testparams = {'setType':'winVolumeAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+//testparams = {'setType':'winMicrophoneAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+    //volume_control
     document.querySelector("#volume_control > div.c_input > input").addEventListener('input',function(){
-        params = {  'setType':'setMonitorBrightness',
-                        'setParams':{'display':'Lenovo 40A0','brightness':this.value}
+        params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': this.value}
+                      };
+        setWin(JSON.stringify(params));
+        imgValue = Number(document.querySelector("#volume_control > div.c_input > img").value)
+        if (this.value > 0 & imgValue == 1){
+            params1 = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': 'nomute'}
+                      };
+            setWin(JSON.stringify(params1));
+            document.querySelector("#volume_control > div.c_input > img").value = 0;
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+        };
+    });
+    document.querySelector("#volume_control > div.c_input > img").addEventListener('click',function(){
+//      var audioId = document.querySelector("#volume_control > div.c_select > select").selectedOptions[0].value;
+        imgValue = Number(document.querySelector("#volume_control > div.c_input > img").value)
+        if(imgValue == 0){
+            value = 'mute';
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume-mute.svg";
+            document.querySelector("#volume_control > div.c_input > img").value = 1;
+        }else if ( imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+            document.querySelector("#volume_control > div.c_input > img").value = 0;
+        };
+        params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': value}
                       };
         setWin(JSON.stringify(params));
     });
+    document.querySelector("#volume_control > div.c_button > button:nth-child(1)").addEventListener('click',function(){
+        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        var value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':value-2}
+                      };
 
+        setWin(JSON.stringify(params));
+        if (value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+        };
 
-    document.querySelector("#volume_control > div.c_input > img");
-    document.querySelector("#volume_control > div.c_button > button:nth-child(1)");
-    document.querySelector("#volume_control > div.c_button > button:nth-child(2)");
+        if(value <= 0){
+            document.querySelector("#brightness_control > div.c_input > input").value = 0;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 0;
+        }else{
+            document.querySelector("#brightness_control > div.c_input > input").value = value-2;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value-2;
+        }
+
+    });
+    document.querySelector("#volume_control > div.c_button > button:nth-child(2)").addEventListener('click',function(){
+        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        var value = Number(document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value);
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':value+2}
+                      };
+        setWin(JSON.stringify(params));
+        console.log("aa"+value)
+        if (value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+        };
+        if(value >= 100){
+            document.querySelector("#brightness_control > div.c_input > input").value = 100;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 100;
+        }else{
+            document.querySelector("#brightness_control > div.c_input > input").value = value+2;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value+2;
+        }
+        console.log("bb"+value)
+    });
+    document.querySelector("#volume_control > div.c_select > select").addEventListener('change',function(){
+        did = document.querySelector("#volume_control > div.c_select > select").value;
+        params = {
+            'setType':'switchIODevice',
+            'setParams':{'deviceId': did,'role':'0'}
+        };
+        setWin(JSON.stringify(params))
+
+        params1 = {
+            'getTypes':['getAudioOutVolumeInfo']
+        };
+        vol = getInfo(JSON.stringify(params1))
+
+        volValue = vol['getAudioOutVolumeInfo']['speaker']['volume']
+        volMute = vol['getAudioOutVolumeInfo']['speaker']['isMute']
+        document.querySelector("#volume_control > div.c_input > input").value = volValue;
+        document.querySelector("#volume_control > div.c_input > img").value = Number(volMute);
+        if (Number(volMute) == 0){
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+        }else{
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume-mute.svg";
+        };
+    });
+
+    //brightness_control
+    document.querySelector("#brightness_control > div.c_input > input").addEventListener('input',function(){
+        displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':this.value}
+                      };
+
+        setWin(JSON.stringify(params));
+        document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value=this.value;
+        if (this.value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+        };
+    });
+    document.querySelector("#brightness_control > div.c_input > img").addEventListener('click',function(){
+        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        var value = document.querySelector("#brightness_control > div.c_input > input").value;
+        if(value > 0){
+            value = 0;
+        }else{
+            value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
+        };
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':value}
+                      };
+        setWin(JSON.stringify(params));
+        if (value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+            document.querySelector("#brightness_control > div.c_input > input").value = 0;
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+            document.querySelector("#brightness_control > div.c_input > input").value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
+        };
+    });
+    document.querySelector("#brightness_control > div.c_button > button:nth-child(1)").addEventListener('click',function(){
+        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        var value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':value-2}
+                      };
+
+        setWin(JSON.stringify(params));
+        if (value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+        };
+
+        if(value <= 0){
+            document.querySelector("#brightness_control > div.c_input > input").value = 0;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 0;
+        }else{
+            document.querySelector("#brightness_control > div.c_input > input").value = value-2;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value-2;
+        }
+
+    });
+    document.querySelector("#brightness_control > div.c_button > button:nth-child(2)").addEventListener('click',function(){
+        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
+        var value = Number(document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value);
+        params = {  'setType':'setMonitorBrightness',
+                        'setParams':{'display': displayName,'brightness':value+2}
+                      };
+        setWin(JSON.stringify(params));
+        if (value == 0){
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
+        }else{
+            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+        };
+        if(value >= 100){
+            document.querySelector("#brightness_control > div.c_input > input").value = 100;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 100;
+        }else{
+            document.querySelector("#brightness_control > div.c_input > input").value = value+2;
+            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value+2;
+        }
+    });
+    document.querySelector("#brightness_control > div.c_select > select").addEventListener('change',function(){
+        document.querySelector("#brightness_control > div.c_input > input").value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
+    });
 }
 
 
@@ -113,10 +289,24 @@ function updateControlPanel(resp){
         var opt = document.createElement("option");
         opt.text = mon;
         opt.value = mons[mon];
-        console.log(opt.value)
         bSelect.appendChild(opt);
     };
     document.querySelector("#brightness_control > div.c_input > input").value = document.querySelector("#brightness_control > div.c_select > select > option:nth-child(1)").value;
+    if(document.querySelector("#brightness_control > div.c_input > input").value >0 ){
+        document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+    };
+
+    document.querySelector("#mic_control > div.c_input > img").value = resp['microphone']['isMute'];
+    if(resp['microphone']['isMute'] == 0 ){
+        document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+
+    };
+
+    document.querySelector("#volume_control > div.c_input > img").value = resp['speaker']['isMute'];
+    if(resp['speaker']['isMute'] == 0 ){
+        document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+    };
+
     document.querySelector("#brightness_control > div.c_select > select > option:nth-child(1)").selected="selected";
 }
 
@@ -150,11 +340,11 @@ function getInfo(params){
         data: params,
         type: "post",
         dataType: "json",
+        async:false,
         success: function(res) {
 //                updateWeatherValue(res);
 //                updateControlPanel(res);
-                console.log(res);
-                console.log(res['getAudioInfo']['microphone']['volume']);
+                return res;
 
         }
     });
@@ -174,6 +364,7 @@ function setWin(params){
         data: params,
         type: "post",
         dataType: "json",
+        async:false,
         success: function(res) {
 //                updateWeatherValue(res);
 //                updateControlPanel(res);
