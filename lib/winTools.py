@@ -55,6 +55,8 @@ def winVolumeAdjust(params):
         volume.SetMute(1, None)
     elif param == 'nomute':
         volume.SetMute(0, None)
+    elif param == 0 or param == '0':
+        volume.SetMasterVolumeLevelScalar(0, None)
     else:
         volume.SetMasterVolumeLevelScalar(round(int(param) / 100, 2), None)
 
@@ -65,6 +67,7 @@ def winMicrophoneAdjust(params):
     # user32.keybd_event(0xAF, 0, 0, 0)
     # volume_down
     # user32.keybd_event(0xAE, 0, 0, 0)
+    print(params)
     param = params['param']
     devices = AudioUtilities.GetMicrophone()
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
@@ -73,6 +76,8 @@ def winMicrophoneAdjust(params):
         volume.SetMute(1, None)
     elif param == 'nomute':
         volume.SetMute(0, None)
+    elif param == 0 or param == '0':
+        volume.SetMasterVolumeLevelScalar(0, None)
     else:
         volume.SetMasterVolumeLevelScalar(round(int(param) / 100, 2), None)
 

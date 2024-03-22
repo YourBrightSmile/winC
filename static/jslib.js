@@ -44,49 +44,42 @@ function addEvent(){
         setWin(JSON.stringify(params));
     });
     document.querySelector("#volume_control > div.c_button > button:nth-child(1)").addEventListener('click',function(){
-        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
-        var value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
-        params = {  'setType':'setMonitorBrightness',
-                        'setParams':{'display': displayName,'brightness':value-2}
+        imgValue = Number(document.querySelector("#volume_control > div.c_input > img").value)
+        volValue = Number(document.querySelector("#volume_control > div.c_input > input").value) - 2
+        if (imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+            document.querySelector("#volume_control > div.c_input > img").value = 0;
+            params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': value}
                       };
-
-        setWin(JSON.stringify(params));
-        if (value == 0){
-            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
-        }else{
-            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
+            setWin(JSON.stringify(params));
         };
-
-        if(value <= 0){
-            document.querySelector("#brightness_control > div.c_input > input").value = 0;
-            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 0;
-        }else{
-            document.querySelector("#brightness_control > div.c_input > input").value = value-2;
-            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value-2;
-        }
-
+        if (volValue < 0){ volValue=0; };
+        params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': volValue}
+                      };
+        setWin(JSON.stringify(params));
+        document.querySelector("#volume_control > div.c_input > input").value = volValue;
     });
     document.querySelector("#volume_control > div.c_button > button:nth-child(2)").addEventListener('click',function(){
-        var displayName = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].text;
-        var value = Number(document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value);
-        params = {  'setType':'setMonitorBrightness',
-                        'setParams':{'display': displayName,'brightness':value+2}
+        imgValue = Number(document.querySelector("#volume_control > div.c_input > img").value)
+        volValue = Number(document.querySelector("#volume_control > div.c_input > input").value) + 2
+        if (imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
+            document.querySelector("#volume_control > div.c_input > img").value = 0;
+            params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': value}
+                      };
+            setWin(JSON.stringify(params));
+        };
+        if (volValue > 100){ volValue = 100; };
+        params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': volValue}
                       };
         setWin(JSON.stringify(params));
-        console.log("aa"+value)
-        if (value == 0){
-            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness-low.svg";
-        }else{
-            document.querySelector("#brightness_control > div.c_input > img").src = "../static/icon/brightness.svg";
-        };
-        if(value >= 100){
-            document.querySelector("#brightness_control > div.c_input > input").value = 100;
-            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = 100;
-        }else{
-            document.querySelector("#brightness_control > div.c_input > input").value = value+2;
-            document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value = value+2;
-        }
-        console.log("bb"+value)
+        document.querySelector("#volume_control > div.c_input > input").value = volValue;
     });
     document.querySelector("#volume_control > div.c_select > select").addEventListener('change',function(){
         did = document.querySelector("#volume_control > div.c_select > select").value;
@@ -109,6 +102,100 @@ function addEvent(){
             document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume.svg";
         }else{
             document.querySelector("#volume_control > div.c_input > img").src = "../static/icon/volume-mute.svg";
+        };
+    });
+
+    //mic_control
+    document.querySelector("#mic_control > div.c_input > input").addEventListener('input',function(){
+        params = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': this.value}
+                      };
+        setWin(JSON.stringify(params));
+        imgValue = Number(document.querySelector("#mic_control > div.c_input > img").value)
+        if (this.value > 0 & imgValue == 1){
+            params1 = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': 'nomute'}
+                      };
+            setWin(JSON.stringify(params1));
+            document.querySelector("#mic_control > div.c_input > img").value = 0;
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+        };
+    });
+    document.querySelector("#mic_control > div.c_input > img").addEventListener('click',function(){
+        imgValue = Number(document.querySelector("#mic_control > div.c_input > img").value)
+        if(imgValue == 0){
+            value = 'mute';
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone-slash.svg";
+            document.querySelector("#mic_control > div.c_input > img").value = 1;
+        }else if ( imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+            document.querySelector("#mic_control > div.c_input > img").value = 0;
+        };
+        params = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': value}
+                      };
+        setWin(JSON.stringify(params));
+    });
+    document.querySelector("#mic_control > div.c_button > button:nth-child(1)").addEventListener('click',function(){
+        imgValue = Number(document.querySelector("#mic_control > div.c_input > img").value)
+        volValue = Number(document.querySelector("#mic_control > div.c_input > input").value) - 2
+        if (imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+            document.querySelector("#mic_control > div.c_input > img").value = 0;
+            params = {  'setType':'winVolumeAdjust',
+                        'setParams':{'param': value}
+                      };
+            setWin(JSON.stringify(params));
+        };
+        if (volValue < 0){ volValue=0; };
+        params = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': volValue}
+                      };
+        setWin(JSON.stringify(params));
+        document.querySelector("#mic_control > div.c_input > input").value = volValue;
+    });
+    document.querySelector("#mic_control > div.c_button > button:nth-child(2)").addEventListener('click',function(){
+        imgValue = Number(document.querySelector("#mic_control > div.c_input > img").value)
+        volValue = Number(document.querySelector("#mic_control > div.c_input > input").value) + 2
+        if (imgValue == 1){
+            value = 'nomute';
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+            document.querySelector("#mic_control > div.c_input > img").value = 0;
+            params = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': value}
+                      };
+            setWin(JSON.stringify(params));
+        };
+        if (volValue > 100){ volValue = 100; };
+        params = {  'setType':'winMicrophoneAdjust',
+                        'setParams':{'param': volValue}
+                      };
+        setWin(JSON.stringify(params));
+        document.querySelector("#mic_control > div.c_input > input").value = volValue;
+    });
+    document.querySelector("#mic_control > div.c_select > select").addEventListener('change',function(){
+        did = document.querySelector("#mic_control > div.c_select > select").value;
+        params = {
+            'setType':'switchIODevice',
+            'setParams':{'deviceId': did,'role':'1'}
+        };
+        setWin(JSON.stringify(params))
+
+        params1 = {
+            'getTypes':['getAudioInVolumeInfo']
+        };
+        vol = getInfo(JSON.stringify(params1))
+
+        volValue = vol['getAudioInVolumeInfo']['microphone']['volume']
+        volMute = vol['getAudioInVolumeInfo']['microphone']['isMute']
+        document.querySelector("#mic_control > div.c_input > input").value = volValue;
+        document.querySelector("#mic_control > div.c_input > img").value = Number(volMute);
+        if (Number(volMute) == 0){
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone.svg";
+        }else{
+            document.querySelector("#mic_control > div.c_input > img").src = "../static/icon/microphone-slash.svg";
         };
     });
 
@@ -343,12 +430,10 @@ function getInfo(params){
         dataType: "json",
         async:false,
         success: function(res) {
-//                updateWeatherValue(res);
-//                updateControlPanel(res);
-                return res;
-
+                resp =  res;
         }
     });
+    return resp
 }
 
 //param: mute/nomute/1-100
