@@ -19,7 +19,29 @@
 					</div>
 					<div class="date_text" id="date">2024年3月2日，星期六</div>
 				</div>
-				<div class="wininfo">wininfo</div>
+				<div class="wininfoContainer">
+					<div class="status">
+						<div id="CPU"></div>
+						<div id="GPU"></div>
+						<div id="DISK"></div>
+					</div>
+
+					<div class="osinfo">
+						<pre>
+nop@SZMGINB1409A
+----------------
+Uptime: 14 days, 8 hours, 12 mins
+IP: 1.1.1.1(WLAN)/2.2.2.2(ETH)/3.3.3.3(FIBER)
+MAC: AA:BB:CC:DD:EE:FF/
+CPU: Intel i5-5300U (4) @ 2.294GHz
+GPU: Intel i5-5300U (4) @ 2.294GHz
+Memory: 97MiB / 12543MiB
+Disk: DISKNAME/DISKNAME/DISKNAME/DISKNAME
+OS: Windows 10 x86_64
+						</pre>
+
+					</div>
+				</div>
 				<div class="weather">
 					<div class="cur_weather">
 						<div id="daysCurr_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
@@ -120,8 +142,10 @@
 				</div>
 			</div>
 			<div class="panel" id="page03">
-				<div id="container">
-					<img src="./static/icon/edge.png">
+				<div id="appContainer">
+					<div class="app">
+						<img src="./static/icon/edge.png">
+					</div>
 				</div>
 			</div>
 		</div>
