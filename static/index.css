@@ -30,6 +30,38 @@ html,body {
     flex:0 0 100%;
     overflow:hide;
 }
+
+.osContainer {
+    position:absolute;
+    top:50%;
+    left:50%;
+    height:80%;
+    width:80%;
+    transform: translate(-50%,-50%);
+    border-radius:20px;
+    background:rgb(0,0,0,0.8);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.osPic {
+    text-align:center;
+     width:20%;
+}
+.osPic img{
+    height:80%;
+    width:80%;
+}
+
+.osInfo {
+    color:lightblue;
+    font-size: 20px;
+    width: 70%;
+}
+
+
+
 #page01 {
     background: rgb(0,0,0,0.5);
     display:flex;
@@ -63,16 +95,12 @@ html,body {
     font-size: 15px;
     text-align: center;
 }
-.wininfoContainer {
+.winStatusContainer {
     float:left;
     width:80%;
     height:70%;
 }
-.osinfo {
-    color:white;
-    font-size: 12px;
-    font-weight: bold;
-}
+
 
 .weather {
     float:left;

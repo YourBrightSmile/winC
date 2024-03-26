@@ -58,8 +58,14 @@ document.addEventListener("touchend", function (e) {
     }
 });
 
-
+function initFunc(){
+    setMainPage(0);
+    updateTime();
+    addEvent();
+    getInitInfo();
+};
 window.onload = initFunc;
+
 
 
 

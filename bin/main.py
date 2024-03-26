@@ -4,7 +4,7 @@ import json
 import os
 import sys
 import tornado
-from tornado.escape import json_decode,json_encode
+from tornado.escape import json_decode, json_encode
 
 pathS = [os.path.dirname(__file__) + '/../', os.path.dirname(__file__) + '/../lib']
 print("libs", pathS)
@@ -14,7 +14,14 @@ from commonvar import *
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        content = tornado.template.Loader("../static/").load("index.html").generate()
+        genParamsName = ['domain', 'user', 'computername', 'uptime', 'ip', 'mac', 'cpu', 'gpu', 'memory', 'disk',
+                         'os', ]
+        # { i:"aaa" for i in genParamsName }
+        osInfo = {}
+        # params = {i: "faff" for i, v in zip(genParamsName, osInfo)}
+        params = {i: (" N/A" if 1 else osInfo[i]) for i in genParamsName}
+        print(params)
+        content = tornado.template.Loader("../static/").load("index.html").generate(**params)
         self.write(content)
         # winTools.winBrightnessAdjust(30)
 
@@ -26,7 +33,7 @@ class SetHandler(tornado.web.RequestHandler):
     def post(self):
         postBody = json_decode(self.request.body)
         try:
-            if len(postBody)>0:
+            if len(postBody) > 0:
                 funcName = postBody['setType']
                 params = postBody['setParams']
                 infoMethodDict[funcName](params)
@@ -35,6 +42,7 @@ class SetHandler(tornado.web.RequestHandler):
         except Exception as e:
             print("Post SetHandler  Exception:", e)
         print('Post SetHandler  End......')
+
 
 class GetInfoHandler(tornado.web.RequestHandler):
     def get(self):

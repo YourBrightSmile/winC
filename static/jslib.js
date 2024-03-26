@@ -1,8 +1,4 @@
-function initFunc(){
-    updateTime();
-    addEvent();
-    getInitInfo()
-};
+
 
 function addEvent(){
     //control pannel
@@ -459,6 +455,18 @@ function setWin(params){
         }
     });
 }
+
+
+//setMainPage,page strart from index 0
+function setMainPage(page){
+    var elements = document.getElementsByClassName("panel");
+    setValue = parseInt(page)*parseInt(100);
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.transform='translateX(-'+setValue+'%)';
+        //elements[i].style.transition='transform 0.5s';
+    }
+}
+
 
 colors = [
     "5c2223",

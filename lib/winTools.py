@@ -130,6 +130,7 @@ def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
             if dev is not None:
                 if not ": None" in str(AudioUtilities.CreateDevice(dev)):
                     devices.append(AudioUtilities.CreateDevice(dev))
+    #deviceEnumerator.Release()
     return devices
 
 

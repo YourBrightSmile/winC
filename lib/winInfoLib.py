@@ -9,13 +9,16 @@ w = wmi.WMI()
 
 def getOsInfo():
     result = {}
-    # systeminfo
+    result['domain'] = os.environ['userdomain']
+    result['user'] = os.getlogin()
+    result['computername'] = os.environ['COMPUTERNAME']
+    # baseInfo
     for system in w.Win32_OperatingSystem():
-        tmp = {}
-        usernameFull = os.environ['userdomain'] + '\\' + os.getlogin()+'@'+os.environ['COMPUTERNAME']
-        tmp['osname'] = system.Caption
-        tmp['usernameFull'] = usernameFull
-        result['OperatingSystem'] = tmp
+        result['osname'] = system.Caption
+
+    genParamsName = ['domain', 'user', 'computername', 'uptime', 'ip', 'mac', 'cpu', 'gpu', 'memory', 'disk',
+                     'os', ]
+
 
     w.Win32_Processor()
     w.Win32_DiskDrive()
