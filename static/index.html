@@ -10,7 +10,30 @@
 	</head>
 	<body>
 		<div class="foot">
-<!--			<div>屏幕保护 动态</div>-->
+			<div class="panel" id="page00">
+				<div class="osContainer">
+					<div class="osPic">
+					<img src="../static/img/windows.png">
+				</div>
+					<div class="osInfo">
+						<pre>
+{{domain}}\{{user}}@{{computername}}
+----------------
+Uptime: {{uptime}}
+IP: {{ip}}
+MAC: {{mac}}
+CPU: {{cpu}}
+GPU: {{gpu}}
+Memory: {{memory}}
+Disk: {{disk}}
+OS: {{os}}
+						</pre>
+
+				</div>
+				</div>
+
+			</div>
+>>>>>>> refs/remotes/origin/main
 			<div class="panel" id="page01">
 				<div class="datetime">
 					<div id="datetime_container">
@@ -20,7 +43,15 @@
 					</div>
 					<div class="date_text" id="date">2024年3月2日，星期六</div>
 				</div>
-				<div class="wininfo">wininfo</div>
+				<div class="winStatusContainer">
+					<div class="status">
+						<div id="CPU"></div>
+						<div id="GPU"></div>
+						<div id="DISK"></div>
+					</div>
+
+
+				</div>
 				<div class="weather">
 					<div class="cur_weather">
 						<div id="daysCurr_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>
@@ -121,10 +152,35 @@
 				</div>
 			</div>
 			<div class="panel" id="page03">
-				<div id="container">
-					<img src="./static/icon/edge.png">
+				<div id="appContainer">
+					<div class="app">
+						<img src="./static/icon/edge.png">
+					</div>
 				</div>
 			</div>
 		</div>
+		<div class="wallpaper">
+			<div id="colorBlock">
+				<canvas id="canvas"></canvas>
+			</div>
+		</div>
 	</body>
+	<script>
+		var can = document.getElementById('canvas');
+		can.style.width = "100%";
+        can.style.height = "100%";
+        var ctx=can.getContext("2d");
+        var b = can.width/20;
+        var num = Math.floor((can.width/b) * (can.height/b))
+        for (var x=0;x <can.width;x+=b){
+        	for (var y=0;y <can.height;y+=b){
+        		ctx.fillStyle='#' + colors[Math.floor(Math.random()*num)];
+        		ctx.fillRect(x, y,b, b);
+        	}
+        }
+
+<!--		ctx.drawImage(img,100%,100%);-->
+<!--		ctx.fillText("AAA",);-->
+
+	</script>
 </html>
