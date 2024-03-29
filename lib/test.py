@@ -12,7 +12,6 @@ from pyvda import AppView, get_apps_by_z_order, VirtualDesktop, get_virtual_desk
 
 # desktops start from 1
 # window (startX,startY,endX,endY)
-# Window and desktop  not working properly  , can't get handle from grandchild process ,ex.calc , execute calc will open child process to start Calcutor process (so window hwnd in grandchild process)
 def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
     vdNum = len(get_virtual_desktops())
     current_desktop = VirtualDesktop.current()
