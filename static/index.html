@@ -158,5 +158,28 @@ OS: {{os}}
 				</div>
 			</div>
 		</div>
+		<div class="wallpaper">
+			<div id="colorBlock">
+				<canvas id="canvas"></canvas>
+			</div>
+		</div>
 	</body>
+	<script>
+		var can = document.getElementById('canvas');
+		can.style.width = "100%";
+        can.style.height = "100%";
+        var ctx=can.getContext("2d");
+        var b = can.width/20;
+        var num = Math.floor((can.width/b) * (can.height/b))
+        for (var x=0;x <can.width;x+=b){
+        	for (var y=0;y <can.height;y+=b){
+        		ctx.fillStyle='#' + colors[Math.floor(Math.random()*num)];
+        		ctx.fillRect(x, y,b, b);
+        	}
+        }
+
+<!--		ctx.drawImage(img,100%,100%);-->
+<!--		ctx.fillText("AAA",);-->
+
+	</script>
 </html>

@@ -1,21 +1,24 @@
 #!/bin/python3
+import ctypes
+import subprocess
 import time
 from ctypes import cast, POINTER
-
-import wmi
+import comtypes
+import pyautogui
+import screen_brightness_control as sbc
+import win32con
+import win32gui
+import win32process
 from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
 from pycaw.api.mmdeviceapi import IMMDeviceEnumerator
 from pycaw.constants import DEVICE_STATE, EDataFlow, CLSID_MMDeviceEnumerator
 from pycaw.utils import AudioUtilities
-import comtypes
-import ctypes
-import screen_brightness_control as sbc
+from pyvda import AppView, VirtualDesktop, get_virtual_desktops
+
 from lib import policyconfig as pc
-import pyautogui
-import clr  # the pythonnet module.
-import os
 from lib.winInfoLib import *
+
 
 # cwdpath = os.getcwd()
 # clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
@@ -200,6 +203,73 @@ def getWinInfoByTypes(isall=0, *types):
             winInfoDict[t]()
     return winInfo
 
+# desktops start from 1
+# window (startX,startY,endX,endY)
+def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
+    vdNum = len(get_virtual_desktops())
+    current_desktop = VirtualDesktop.current()
+    current_app = AppView.current()
+    target_desktop = VirtualDesktop(3)
+    # VirtualDesktop(1).rename('desktop xx')
+    # AppView.current().pin()
+    # VirtualDesktop(5).go()
+    # VirtualDesktop(3).create()
+    if desktops > vdNum:
+        createDesktops(desktops)
+    for command in commands:
+        if command:
+            # mons = win32api.EnumDisplayMonitors()
+            # win32api.GetMonitorInfo()
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            # 后台打开窗口，无图标，无窗口
+            startupinfo.wShowWindow = win32con.SW_HIDE
+            process = subprocess.Popen(command,
+                                       startupinfo=startupinfo,
+                                       creationflags=win32con.DETACHED_PROCESS | win32con.CREATE_NEW_PROCESS_GROUP,
+                                       close_fds=True)
+
+            time.sleep(0.1)
+            print(process.pid)
+            # 移动并显示窗口
+            moveWindowForPid(process.pid, 0, 0, desktops, win32con.SW_SHOWMINIMIZED)
+            print("comman end...", command)
+
+def createDesktops(desktops, names=None):
+    vdNum = len(get_virtual_desktops())
+    if desktops > vdNum:
+        for i in range(vdNum, desktops):
+            VirtualDesktop(i).create()
+            if names:
+                VirtualDesktop(i).rename(names[i - vdNum])
+
+def moveWindowForPid(pid, x, y, SW, desktop=1, ):
+    def callback(hwnd, hwnds):
+        # not need window visible
+        # if win32gui.IsWindowVisible(hwnd) and win32gui.IsWindowEnabled(hwnd):
+        if win32gui.IsWindow(hwnd):
+            _, found_pid = win32process.GetWindowThreadProcessId(hwnd)
+            # Default IME will be GET also
+            if found_pid == pid and "Default IME" not in win32gui.GetWindowText(hwnd):
+                print(hwnd)
+                x0, y0, x1, y1 = win32gui.GetWindowRect(hwnd)
+                w = x1 - x0
+                h = y1 - y0
+                # win32gui.MoveWindow(hwnd, x, y, w, h, True)
+                print("xxx", x, y, w, h)
+                win32gui.MoveWindow(hwnd, x, y, w, h, True)
+                # 最小化显示窗口
+                win32gui.ShowWindow(hwnd, SW)
+                # app = AppView(hwnd)
+                # app.move(VirtualDesktop(desktop))
+        return True
+
+    hwnds = []
+    win32gui.EnumWindows(callback, hwnds)
+    if hwnds is not None:
+        return hwnds
+    else:
+        return False
 
 def isWinLocked():
     return ctypes.windll.user32.GetForegroundWindow() == 0
@@ -219,20 +289,5 @@ def unlockWindows():
     except:
         pass
 
-# time.sleep(10)
-# unlockWindows()
 
-# winBrightnessAdjust(20)
-# print(getMonitorsAndBrightness())
-#
-# setMonitorBrightness('Lenovo 40A0',100)
-# sbc.fade_brightness(0,None,0.01)
-# winVolumeAdjust()
 
-# inD = getAudioDevices('in')
-# outD = getAudioDevices('out')
-# for i in inD:
-#     print(i, inD[i])
-# for o in outD:
-#     print(o)
-# c=comtypes.CoCreateInstance(CLSID_PolicyConfigClient,IMMDeviceEnumerator,CLSCTX_ALL)

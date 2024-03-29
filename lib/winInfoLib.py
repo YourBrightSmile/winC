@@ -1,11 +1,16 @@
 #!/bin/python3
 import os
 
+import psutil
 import pynvml
 import wmi
+from conf.appconfig import appconfig
 
 winInfoDict = ['']
 w = wmi.WMI()
+
+def getAppInfo():
+    return appconfig
 
 def getOsInfo():
     result = {}
@@ -19,7 +24,9 @@ def getOsInfo():
     genParamsName = ['domain', 'user', 'computername', 'uptime', 'ip', 'mac', 'cpu', 'gpu', 'memory', 'disk',
                      'os', ]
 
-
+    psutil.boot_time()
+    psutil.virtual_memory()
+    psutil.net_connections()
     w.Win32_Processor()
     w.Win32_DiskDrive()
     w.Win32_LogicalDisk()
