@@ -13,8 +13,8 @@
 			<div class="panel" id="page00">
 				<div class="osContainer">
 					<div class="osPic">
-					<img src="../static/img/windows.png">
-				</div>
+						<img src="../static/img/windows.png">
+					</div>
 					<div class="osInfo">
 						<pre>
 {{domain}}\{{user}}@{{computername}}
@@ -28,12 +28,10 @@ Memory: {{memory}}
 Disk: {{disk}}
 OS: {{os}}
 						</pre>
-
+					</div>
 				</div>
-				</div>
-
 			</div>
->>>>>>> refs/remotes/origin/main
+
 			<div class="panel" id="page01">
 				<div class="datetime">
 					<div id="datetime_container">
@@ -150,6 +148,9 @@ OS: {{os}}
 						</select>
 					</div>
 				</div>
+				<div class="ctrLock">
+					<p>Tap Tap</p>
+				</div>
 			</div>
 			<div class="panel" id="page03">
 				<div id="appContainer">
@@ -158,12 +159,13 @@ OS: {{os}}
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="wallpaper">
+			<div class="wallpaper">
 			<div id="colorBlock">
 				<canvas id="canvas"></canvas>
 			</div>
 		</div>
+		</div>
+
 	</body>
 	<script>
 		var can = document.getElementById('canvas');

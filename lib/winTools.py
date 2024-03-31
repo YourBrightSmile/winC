@@ -206,7 +206,7 @@ def getWinInfoByTypes(isall=0, *types):
 # desktops start from 1
 # window (startX,startY,endX,endY)
 # Window and desktop  not working properly  , can't get handle from grandchild process ,ex.calc , execute calc will open child process to start Calcutor process (so window hwnd in grandchild process)
-
+#创建一个可以有handle的，可以恢复执行的 子进程，移动子进程到虚拟桌面，子进程在启动程序
 def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
     vdNum = len(get_virtual_desktops())
     current_desktop = VirtualDesktop.current()
@@ -224,8 +224,8 @@ def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
             # win32api.GetMonitorInfo()
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            # 后台打开窗口，无图标，无窗口
-            startupinfo.wShowWindow = win32con.SW_HIDE
+            #
+            startupinfo.wShowWindow = win32con.SW_MINIMIZE
             process = subprocess.Popen(command,
                                        startupinfo=startupinfo,
                                        creationflags=win32con.DETACHED_PROCESS | win32con.CREATE_NEW_PROCESS_GROUP,
