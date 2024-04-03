@@ -1,53 +1,135 @@
 #!/bin/python3
+import datetime
 import os
-
 import psutil
+from psutil._common import bytes2human
 import pynvml
 import wmi
-from conf.appconfig import appconfig
 
-winInfoDict = ['']
 w = wmi.WMI()
-
-def getAppInfo():
-    return appconfig
-
 def getOsInfo():
     result = {}
     result['domain'] = os.environ['userdomain']
     result['user'] = os.getlogin()
     result['computername'] = os.environ['COMPUTERNAME']
-    # baseInfo
+
     for system in w.Win32_OperatingSystem():
-        result['osname'] = system.Caption
+        result['os'] = system.Caption + "." + system.BuildNumber + " / " + system.InstallDate[:8] + "_installed"
 
-    genParamsName = ['domain', 'user', 'computername', 'uptime', 'ip', 'mac', 'cpu', 'gpu', 'memory', 'disk',
-                     'os', ]
+    result['uptime'] = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H: %M: %S")
+    ifaddrs, ifstats = psutil.net_if_addrs(), psutil.net_if_stats()
+    result['ip'] = ""
+    result['mac'] = ""
+    for name, val in ifstats.items():
+        res = {}
+        if ifstats[name][0] and 'Loopback' not in name:
+            result['ip'] = result['ip'] + ifaddrs[name][1].address + "/"
+            result['mac'] = result['mac'] + ifaddrs[name][0].address + "/"
+    result['ip'] = result['ip'][:-1]
+    result['mac'] = result['mac'][:-1]
+    # for name, val in ifstats.items():
+    #     res = {}
+    #     if ifstats[name][0] and 'Loopback' not in name:
+    #         iftmp = {}
+    #         iftmp["address"] = ifaddrs[name][1].address
+    #         iftmp["netmask"] = ifaddrs[name][1].netmask
+    #         iftmp["netmask-c"] = sum(bin(int(x)).count('1') for x in ifaddrs[name][1].netmask.split('.'))
+    #         iftmp["mac"] = ifaddrs[name][0].address
+    #         res[name] = iftmp
+    #         result['ifinfo'].update(res)
+    cpus = w.Win32_Processor()
+    result['cpu'] = ""
+    for c in cpus:
+        if c.Availability == 3:
+            result['cpu'] += c.name + " / "
+    if result['cpu']:
+        result['cpu'] = result['cpu'][:-2]
 
-    psutil.boot_time()
-    psutil.virtual_memory()
-    psutil.net_connections()
-    w.Win32_Processor()
-    w.Win32_DiskDrive()
-    w.Win32_LogicalDisk()
-    w.Win32_BaseBoard()
-    w.Win32_NetworkAdapterConfiguration(IPEnabled=True)
-    w.Win32_BIOS()
-    w.Win32_PhysicalMemory()
-    w.Win32_Process()
-    w.Win32_VideoController()
-    # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature-273
-    w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature
+    vcs = w.Win32_VideoController()
+    result['gpu'] = ""
+    for v in vcs:
+        if v.Availability == 3:
+            result['gpu'] += v.name + " / "
+    if result['gpu']:
+        result['gpu'] = result['gpu'][:-2]
+
+    memsinfo = w.Win32_PhysicalMemory()
+    if len(memsinfo) > 0:
+        for phymem in memsinfo:
+            result['memory'] = phymem.PartNumber + " " + str(bytes2human(int(phymem.Capacity))) + " " + str(
+                phymem.Speed) + "MHz /"
+    if result['memory']:
+        result['memory'] = result['memory'][:-2]
+    swapinfo = psutil.swap_memory()
+    if swapinfo:
+        result['swap'] = str(bytes2human(int(swapinfo.used))) + " Used / " + str(
+            bytes2human(int(swapinfo.total))) + " Total"
+    diskinfo = w.Win32_DiskDrive()
+    if diskinfo:
+        tmp = ""
+        for disk in diskinfo:
+            tmp = tmp + disk.Caption + " " + str(bytes2human(int(disk.Size))) + " " + disk.MediaType + '''
+      '''
+    result['disk'] = tmp.rstrip()
+    return result
+
+    # genParamsName = ['domain', 'user', 'computername', 'uptime', 'ifinfo', 'cpu', 'gpu', 'memory', 'swap', 'disk','os', ]
+
+    # w.Win32_Processor()
+    # w.Win32_DiskDrive()
+    # w.Win32_LogicalDisk()
+    # w.Win32_BaseBoard()
+    # w.Win32_NetworkAdapterConfiguration(IPEnabled=True)
+    # w.Win32_BIOS()
+    # w.Win32_PhysicalMemory()
+    # w.Win32_Process()
+    # Win32_VideoController()[0].Name
+    # w.Win32_VideoController()[0].Availability
+    # # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature-273
+    # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature
     # pynvml.nvmlDeviceGetTemperature(handle, 0)
-'''
-nop@SZMGINB1409A
-----------------
-Uptime: 14 days, 8 hours, 12 mins
-IP: 1.1.1.1(WLAN)/2.2.2.2(ETH)/3.3.3.3(FIBER)
-MAC: AA:BB:CC:DD:EE:FF/
-CPU: Intel i5-5300U (4) @ 2.294GHz
-GPU: Intel i5-5300U (4) @ 2.294GHz
-Memory: 97MiB / 12543MiB
-Disk: DISKNAME/DISKNAME/DISKNAME/DISKNAME
-OS: Windows 10 x86_64
-'''
+
+
+def getIfStats():
+    result = {}
+    ifstats = psutil.net_io_counters()
+    result['bytes_sent'] = str(bytes2human(ifstats.bytes_sent))
+    result['bytes_recv'] = str(bytes2human(ifstats.bytes_recv))
+    return result
+
+
+def getCpuStats():
+    result = {}
+    result['cpus'] = len(w.Win32_Processor())
+    result['cpus'] = psutil.cpu_count(logical=False)
+    result['lcpus'] = psutil.cpu_count()
+    result['freq'] = str(round(psutil.cpu_freq().current/1000,2))+"GHz"
+    result['maxfreq'] = str(round(psutil.cpu_freq().max / 1000, 2)) + "GHz"
+    result['cpu_percent'] = psutil.cpu_percent(interval=1)
+    return result
+def getGpuStats():
+    #intel
+    gpus = w.Win32_VideoController()
+
+
+def getMemStats():
+    result = {}
+    memstats = psutil.virtual_memory()
+    result['mem_total'] = str(bytes2human(memstats.total))
+    result['mem_used'] = str(bytes2human(memstats.used))
+    result['mem_percent'] = memstats.percent
+    return result
+
+def getDsikStats():
+    result = {}
+    part = psutil.disk_partitions()
+    for p in part:
+        tmp = {}
+        dUse = psutil.disk_usage(p.mountpoint)
+        tmp['fstype'] = p.fstype
+        tmp['total'] = str(bytes2human(dUse.total))
+        tmp['used'] = str(bytes2human(dUse.used))
+        tmp['free'] = str(bytes2human(dUse.free))
+        tmp['percent'] = dUse.percent
+        result[p.mountpoint] = tmp
+    return result

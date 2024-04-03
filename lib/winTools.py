@@ -18,7 +18,7 @@ from pyvda import AppView, VirtualDesktop, get_virtual_desktops
 
 from lib import policyconfig as pc
 from lib.winInfoLib import *
-
+from conf.appconfig import appconfig
 
 # cwdpath = os.getcwd()
 # clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
@@ -87,24 +87,32 @@ def winMicrophoneAdjust(params):
 
 def getAudioVolumeInfo(type):
     volumeInfo = {}
-    if type == 'all' or type == 'out':
-        speakers = AudioUtilities.GetSpeakers()
-        if speakers:
-            tmp = {}
-            interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-            volume = cast(interface, POINTER(IAudioEndpointVolume))
-            tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
-            tmp['isMute'] = volume.GetMute()
-            volumeInfo['speaker'] = tmp
-    if type == 'all' or type == 'in':
-        microphone = AudioUtilities.GetMicrophone()
-        if microphone:
-            tmp = {}
-            interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-            volume = cast(interface, POINTER(IAudioEndpointVolume))
-            tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
-            tmp['isMute'] = volume.GetMute()
-            volumeInfo['microphone'] = tmp
+    try:
+        if type == 'all' or type == 'out':
+            speakers = AudioUtilities.GetSpeakers()
+            if speakers:
+                tmp = {}
+                #BUG 0xC0000005  fixed
+                #interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                #volume = cast(interface, POINTER(IAudioEndpointVolume))
+                volume = AudioUtilities.CreateDevice(speakers).EndpointVolume
+                tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
+                tmp['isMute'] = volume.GetMute()
+                volumeInfo['speaker'] = tmp
+
+        if type == 'all' or type == 'in':
+            microphone = AudioUtilities.GetMicrophone()
+            if microphone:
+                tmp = {}
+                #interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                #volume = cast(interface, POINTER(IAudioEndpointVolume))
+                volume = AudioUtilities.CreateDevice(microphone).EndpointVolume
+                tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
+                tmp['isMute'] = volume.GetMute()
+                volumeInfo['microphone'] = tmp
+
+    except Exception as e:
+        print("getAudioVolumeInfo: ",e)
     return volumeInfo
 
 def getAudioOutVolumeInfo():
@@ -120,19 +128,21 @@ def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
         Flow = EDataFlow.eCapture.value  # 1
     else:
         Flow = EDataFlow.eRender.value  # 0
-
-    deviceEnumerator = comtypes.CoCreateInstance(
-        CLSID_MMDeviceEnumerator,
-        IMMDeviceEnumerator,
-        comtypes.CLSCTX_INPROC_SERVER)
-    collection = deviceEnumerator.EnumAudioEndpoints(Flow, state)
-    if collection:
-        count = collection.GetCount()
-        for i in range(count):
-            dev = collection.Item(i)
-            if dev is not None:
-                if not ": None" in str(AudioUtilities.CreateDevice(dev)):
-                    devices.append(AudioUtilities.CreateDevice(dev))
+    try:
+        deviceEnumerator = comtypes.CoCreateInstance(
+            CLSID_MMDeviceEnumerator,
+            IMMDeviceEnumerator,
+            comtypes.CLSCTX_INPROC_SERVER)
+        collection = deviceEnumerator.EnumAudioEndpoints(Flow, state)
+        if collection:
+            count = collection.GetCount()
+            for i in range(count):
+                dev = collection.Item(i)
+                if dev is not None:
+                    if not ": None" in str(AudioUtilities.CreateDevice(dev)):
+                        devices.append(AudioUtilities.CreateDevice(dev))
+    except Exception as e:
+        print("enumAudioDevices: ",e)
     #deviceEnumerator.Release()
     return devices
 
@@ -174,10 +184,11 @@ def getControlInfo():
     audioInfo = getAudioVolumeInfo('all')
     deviceInfo = getAudioDevicesID()
     monitorInfo = getMonitorsAndBrightness()
-    if deviceInfo and audioInfo and monitorInfo:
+    #deviceInfo,monitorInfo=None,None
+    if audioInfo and deviceInfo and monitorInfo:
         audioInfo['audioInfo'] = deviceInfo
         audioInfo['monitorInfo'] = monitorInfo
-        return audioInfo
+    return audioInfo
 
 
 def switchIODevice(params):
@@ -192,21 +203,9 @@ def switchIODevice(params):
     policy_config.SetDefaultEndpoint(params['deviceId'], int(params['role']))
     policy_config.Release()
 
-
-def getWinInfoByTypes(isall=0, *types):
-    winInfo = {}
-    if isall:
-        for t in winInfoDict:
-            winInfoDict[t]()
-    else:
-        for t in types:
-            winInfoDict[t]()
-    return winInfo
-
 # desktops start from 1
 # window (startX,startY,endX,endY)
 # Window and desktop  not working properly  , can't get handle from grandchild process ,ex.calc , execute calc will open child process to start Calcutor process (so window hwnd in grandchild process)
-#创建一个可以有handle的，可以恢复执行的 子进程，移动子进程到虚拟桌面，子进程在启动程序
 def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
     vdNum = len(get_virtual_desktops())
     current_desktop = VirtualDesktop.current()
@@ -272,6 +271,11 @@ def moveWindowForPid(pid, x, y, SW, desktop=1, ):
         return hwnds
     else:
         return False
+
+def getAppInfo():
+    return appconfig
+
+
 
 def isWinLocked():
     return ctypes.windll.user32.GetForegroundWindow() == 0

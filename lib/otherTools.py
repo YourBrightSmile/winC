@@ -13,7 +13,6 @@ def getWeather():
     else:
         pass
 
-
 # res = getWeather()
 #
 # print(res['data']['daily'][0]['date'])

@@ -12,17 +12,18 @@ pathS = [os.path.dirname(__file__) + '/../', os.path.dirname(__file__) + '/../li
 print("libs", pathS)
 sys.path.extend(pathS)
 from commonvar import *
+from tornado.log import enable_pretty_logging
+
+
+# enable_pretty_logging()
 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         genParamsName = ['domain', 'user', 'computername', 'uptime', 'ip', 'mac', 'cpu', 'gpu', 'memory', 'disk',
-                         'os', ]
-        # { i:"aaa" for i in genParamsName }
-        osInfo = {}
-        # params = {i: "faff" for i, v in zip(genParamsName, osInfo)}
-        params = {i: (" N/A" if 1 else osInfo[i]) for i in genParamsName}
-        print(params)
+                         'os', 'swap']
+        osInfo = getOsInfo()
+        params = {i: (" N/A" if osInfo is None else osInfo[i]) for i in genParamsName}
         content = tornado.template.Loader("../static/").load("index.html").generate(**params)
         self.write(content)
         # winTools.winBrightnessAdjust(30)
@@ -74,14 +75,17 @@ def make_app():
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),
         (r"/setWin", SetHandler),
         (r"/getInfo", GetInfoHandler),
+        (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "../static/icon"}),
     ])
 
 
 async def main():
-
-    app = make_app()
-    app.listen(19433)
-    await asyncio.Event().wait()
+    try:
+        app = make_app()
+        app.listen(19433)
+        await asyncio.Event().wait()
+    except Exception as e:
+        print("main exception", e)
 
 
 if __name__ == "__main__":

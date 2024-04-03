@@ -36,7 +36,7 @@ html,body {
     top:50%;
     left:50%;
     height:80%;
-    width:80%;
+    width: 95%;
     transform: translate(-50%,-50%);
     border-radius:20px;
     background:rgb(0,0,0,0.8);
@@ -60,6 +60,7 @@ html,body {
     color:lightblue;
     font-size: 20px;
     width: 70%;
+    overflow:scroll;
 }
 
 

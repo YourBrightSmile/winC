@@ -1,5 +1,6 @@
 import shlex
 import subprocess
+import threading
 import time
 
 import psutil
@@ -7,6 +8,7 @@ import win32api
 import win32con
 import win32gui
 import win32process
+import win32service
 from pyvda import AppView, get_apps_by_z_order, VirtualDesktop, get_virtual_desktops
 
 
@@ -80,6 +82,7 @@ def moveWindowForPid(pid, x, y, SW, desktop=1, ):
     else:
         return False
 
+
 # n = AppView(hwnds[0])
 # n.move(VirtualDesktop(3))
 #
@@ -101,4 +104,79 @@ def moveWindowForPid(pid, x, y, SW, desktop=1, ):
 #                                  None,  # Environment
 #                                  None,  # CurrentDirectory
 #                                 StartInfo)  # StartupInfo
-import  pythontk
+from ctypes import *
+
+WORD = c_ushort
+DWORD = c_ulong
+LPBYTE = POINTER(c_ubyte)
+LPTSTR = POINTER(c_wchar_p)
+HANDLE = c_void_p
+DEBUG_PROCESS = 0x00000001
+CREATE_NEW_CONSOLE = 0x00000010
+
+
+class STARTUPINFO(Structure):
+    _fields_ = [
+        ("cb", DWORD),
+        ("lpReserved", LPTSTR),
+        ("lpDesktop", LPTSTR),
+        ("lpTitle", LPTSTR),
+        ("dwX", DWORD),
+        ("dwY", DWORD),
+        ("dwXSize", DWORD),
+        ("dwYSize", DWORD),
+        ("dwXCountChars", DWORD),
+        ("dwYCountChars", DWORD),
+        ("dwFillAttribute", DWORD),
+        ("dwFlags", DWORD),
+        ("wShowWindow", WORD),
+        ("cbReserved2", WORD),
+        ("lpReserved2", LPBYTE),
+        ("hStdInput", HANDLE),
+        ("hStdOutput", HANDLE),
+        ("hStdError", HANDLE),
+    ]
+
+
+class PROCESS_INFORMATION(Structure):
+    _fields_ = [
+        ("hProcess", HANDLE),
+        ("hThread", HANDLE),
+        ("dwProcessId", DWORD),
+        ("dwThreadId", DWORD),
+    ]
+deskName = "BBB"
+hDesktop = win32service.CreateDesktop(deskName, 0, win32con.GENERIC_ALL, None)
+kernel32 = windll.kernel32
+creation_flags = win32con.DETACHED_PROCESS | win32con.CREATE_NEW_PROCESS_GROUP
+startupinfo = STARTUPINFO()
+processinfo = PROCESS_INFORMATION()
+startupinfo.dwFlags = 0x1
+startupinfo.wShowWindow = win32con.SW_SHOW
+
+startupinfo.lpDesktop = pointer(c_wchar_p(deskName))
+# startupinfo.lpDesktop = pointer(c_char_p(r"WinSta0\Default".encode('utf-8')))
+startupinfo.cb = sizeof(startupinfo)
+kernel32.CreateProcessW(None, "notepad", None, None, None, creation_flags, None, None, byref(startupinfo),
+                            byref(processinfo))
+StartInfo = win32process.STARTUPINFO()
+StartInfo.lpDesktop = deskName
+StartInfo.dwFlags = win32con.STARTF_USESHOWWINDOW
+StartInfo.wShowWindow = win32con.SW_SHOW
+ProcInfo = win32process.CreateProcess(
+    None,
+    "mspaint.exe",
+    None,
+    None,
+    True,
+    win32con.NORMAL_PRIORITY_CLASS | win32con.CREATE_NEW_CONSOLE,
+    None,
+    None,
+    StartInfo)
+def getWindows(hDesktop):
+    hDesktop.SetThreadDesktop()
+    print("aa")
+    import pygetwindow as pg
+    pg.getAllTitles()
+    pg.getAllWindows()
+    hDesktop.EnumDesktopWindows()
