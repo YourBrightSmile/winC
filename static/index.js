@@ -1,21 +1,23 @@
 
 //监听页面是否长时间未操作
 var oldTime = new Date().getTime();
+var oldTimeC = new Date().getTime();
 var newTime = new Date().getTime();
-var outTime = 5 * 10 * 1000; //screen timeout 5min
+var outTime = 5 * 60 * 1000; //screen timeout 5min
 var outTimeC = 10 * 1000; //control panel timeout 10s
 
 document.addEventListener("touchstart", function (e) {
      oldTime = new Date().getTime();
+     oldTimeC = new Date().getTime();
 });
 function OutTime(){
     newTime = new Date().getTime();
     if(newTime - oldTime > outTime){
         oldTime = new Date().getTime();
         document.querySelector("body > div > div.wallpaper").style.zIndex = 10;
-    }
-    if(newTime - oldTime > outTimeC){
-        oldTime = new Date().getTime();
+    };
+    if(newTime - oldTimeC > outTimeC){
+        oldTimeC = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
     }
 }

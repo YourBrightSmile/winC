@@ -343,8 +343,7 @@ input[type="range"]::-webkit-slider-container {
 
 }
 .app img{
-    weight:70%;
-    height:70%;
+    height:55%;
     padding:20px;
     border-radius:20px;
     background:rgba(0,0,0,0.5);
