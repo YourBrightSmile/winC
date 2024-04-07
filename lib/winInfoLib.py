@@ -73,22 +73,6 @@ def getOsInfo():
     result['disk'] = tmp.rstrip()
     return result
 
-    # genParamsName = ['domain', 'user', 'computername', 'uptime', 'ifinfo', 'cpu', 'gpu', 'memory', 'swap', 'disk','os', ]
-
-    # w.Win32_Processor()
-    # w.Win32_DiskDrive()
-    # w.Win32_LogicalDisk()
-    # w.Win32_BaseBoard()
-    # w.Win32_NetworkAdapterConfiguration(IPEnabled=True)
-    # w.Win32_BIOS()
-    # w.Win32_PhysicalMemory()
-    # w.Win32_Process()
-    # Win32_VideoController()[0].Name
-    # w.Win32_VideoController()[0].Availability
-    # # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature-273
-    # w.Win32_PerfFormattedData_Counters_ThermalZoneInformation()[0].Temperature
-    # pynvml.nvmlDeviceGetTemperature(handle, 0)
-
 
 def getIfStats():
     result = {}
@@ -96,8 +80,6 @@ def getIfStats():
     result['bytes_sent'] = str(bytes2human(ifstats.bytes_sent))
     result['bytes_recv'] = str(bytes2human(ifstats.bytes_recv))
     return result
-
-
 def getCpuStats():
     result = {}
     result['cpus'] = len(w.Win32_Processor())
@@ -111,15 +93,17 @@ def getGpuStats():
     #intel
     gpus = w.Win32_VideoController()
 
-
 def getMemStats():
     result = {}
     memstats = psutil.virtual_memory()
     result['mem_total'] = str(bytes2human(memstats.total))
     result['mem_used'] = str(bytes2human(memstats.used))
     result['mem_percent'] = memstats.percent
+    smemstats = psutil.swap_memory()
+    result['smem_total'] = str(bytes2human(smemstats.total))
+    result['smem_used'] = str(bytes2human(smemstats.used))
+    result['smem_percent'] = smemstats.percent
     return result
-
 def getDsikStats():
     result = {}
     part = psutil.disk_partitions()

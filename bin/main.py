@@ -12,6 +12,7 @@ pathS = [os.path.dirname(__file__) + '/../', os.path.dirname(__file__) + '/../li
 print("libs", pathS)
 sys.path.extend(pathS)
 from commonvar import *
+from conf.appconfig import *
 from tornado.log import enable_pretty_logging
 
 
@@ -24,6 +25,7 @@ class MainHandler(tornado.web.RequestHandler):
                          'os', 'swap']
         osInfo = getOsInfo()
         params = {i: (" N/A" if osInfo is None else osInfo[i]) for i in genParamsName}
+        params.update({"appconfig": appconfig})
         content = tornado.template.Loader("../static/").load("index.html").generate(**params)
         self.write(content)
         # winTools.winBrightnessAdjust(30)
@@ -45,6 +47,20 @@ class SetHandler(tornado.web.RequestHandler):
         except Exception as e:
             print("Post SetHandler  Exception:", e)
         print('Post SetHandler  End......')
+
+
+class StartprogramHandler(tornado.web.RequestHandler):
+    def get(self):
+        pass
+
+    def post(self):
+        appName = bytes.decode(self.request.body)
+        try:
+            #startProgarmOnWindowDesktop(appconfig[appName]['appCommand'])
+            subprocess.Popen(appconfig[appName]['appCommand'], close_fds=True)
+        except Exception as e:
+            print("StartprogramHandler  Exception:", e)
+        print('StartprogramHandler  End......')
 
 
 class GetInfoHandler(tornado.web.RequestHandler):
@@ -75,6 +91,7 @@ def make_app():
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),
         (r"/setWin", SetHandler),
         (r"/getInfo", GetInfoHandler),
+        (r"/startProgram", StartprogramHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "../static/icon"}),
     ])
 

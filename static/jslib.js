@@ -276,6 +276,26 @@ function addEvent(){
     document.querySelector("#brightness_control > div.c_select > select").addEventListener('change',function(){
         document.querySelector("#brightness_control > div.c_input > input").value = document.querySelector("#brightness_control > div.c_select > select").selectedOptions[0].value;
     });
+
+    //app start
+    apps = document.querySelectorAll("#appContainer > div");
+    var pname=null;
+    for (i = 0; i < apps.length; ++i) {
+        apps[i].addEventListener('click',function(){
+            startProgram(this.id)
+        });
+    };
+    //从屏保页面返回
+    document.querySelector("body > div > div.wallpaper").addEventListener('touchstart',function(){
+        document.querySelector("body > div > div.wallpaper").style.zIndex = -1;
+
+    });
+    //Tap
+    document.querySelector("#page02 > div.ctrLock").addEventListener('click',function(){
+        document.querySelector("#page02 > div.ctrLock").style.zIndex = -1;
+
+    });
+
 }
 
 
@@ -299,6 +319,12 @@ function updateTime() {
     document.getElementById("minutes").innerHTML = minutes;
     document.getElementById("seconds").innerHTML = seconds;
     document.getElementById("date").innerHTML = now.getFullYear()+"年"+(now.getMonth()+1)+"月"+now.getDate()+"日，"+days[now.getDay()];
+
+    document.getElementById("whours").innerHTML = hours+":";
+    document.getElementById("wminutes").innerHTML = minutes+":";
+    document.getElementById("wseconds").innerHTML = seconds;
+    document.getElementById("wdate").innerHTML = now.getFullYear()+"年"+(now.getMonth()+1)+"月"+now.getDate()+"日，"+days[now.getDay()];
+
     setTimeout(updateTime, 1000); // 每隔1秒调用一次函数自身，实现定时更新
 }
 function updateTimeTextColort(){
@@ -306,7 +332,12 @@ function updateTimeTextColort(){
     document.getElementById("hours").style.color ='#' + colors[Math.floor(Math.random()*len)];
     document.getElementById("minutes").style.color ='#' + colors[Math.floor(Math.random()*len)];
     document.getElementById("seconds").style.color ='#' + colors[Math.floor(Math.random()*len)];
-    document.getElementById("date").style.color ='#' + colors[Math.floor(Math.random()*len)];
+    document.getElementById("date").style.color ='#' + colors[Math.floor(Math.random()*len)];document.getElementById("hours").style.color ='#' + colors[Math.floor(Math.random()*len)];
+
+    document.getElementById("whours").style.color ='#' + colors[Math.floor(Math.random()*len)];
+    document.getElementById("wminutes").style.color ='#' + colors[Math.floor(Math.random()*len)];
+    document.getElementById("wseconds").style.color ='#' + colors[Math.floor(Math.random()*len)];
+    document.getElementById("wdate").style.color ='#' + colors[Math.floor(Math.random()*len)];
 }
 function getDataF(){
     var now = new Date();
@@ -456,6 +487,22 @@ function setWin(params){
     });
 }
 
+function startProgram(appname){
+    var resp;
+    //ajax
+
+    $.ajax({
+        url: "/startProgram",
+        data: appname,
+        type: "post",
+        dataType: "json",
+        async:false,
+        success: function(res) {
+                console.log(res)
+
+        }
+    });
+}
 
 //setMainPage,page strart from index 0
 function setMainPage(page){

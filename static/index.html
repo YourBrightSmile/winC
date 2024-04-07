@@ -42,12 +42,31 @@ OS: {{os}}
 					<div class="date_text" id="date">2024年3月2日，星期六</div>
 				</div>
 				<div class="winStatusContainer">
-					<div class="status">
-						<div id="CPU"></div>
-						<div id="GPU"></div>
-						<div id="DISK"></div>
+					<div id="CPU">
+						<pre>
+CPU:
+2.1 / 2.29GHz
+50%, 60°C
+						</pre>
 					</div>
-
+					<div id="GPU">
+						<pre>
+GPU:
+2.1 / 2.29GHz
+50%, 60°C
+						</pre>
+					</div>
+					<div id="NET">NET: Send,158.8M / Recv:908.9M</div>
+					<div id="MEM">
+						MEM: 9.3G / 15.7G,59.4%
+					</div>
+					<div id="DISK">
+						<pre>
+SWAP: 9.3G / 15.7G,59.4%(swap)
+C:\\: 128G / 167G 77.1% , NTFS
+D:\\: 128G / 167G 77.1% , NTFS
+						</pre>
+					</div>
 
 				</div>
 				<div class="weather">
@@ -149,40 +168,50 @@ OS: {{os}}
 					</div>
 				</div>
 				<div class="ctrLock">
-					<p>Tap Tap</p>
+					<p>Tap</p>
 				</div>
 			</div>
 			<div class="panel" id="page03">
 				<div id="appContainer">
-					<div class="app">
-						<img src="./static/icon/edge.png">
-					</div>
+                    {% for appn, appv in appconfig.items() %}
+						{% if appv['appIcon'] and appv['appCommand']  %}
+							<div class="app" id="{{appn}}" >
+	<!--                            <img src="./static/icon/edge.png">-->
+								<img src="{{ appv['appIcon'] }}">
+							</div>
+                    	{% end %}
+                    {% end %}
 				</div>
 			</div>
 			<div class="wallpaper">
-			<div id="colorBlock">
-				<canvas id="canvas"></canvas>
+				<div id="colorClock">
+<!--					<canvas id="canvas"></canvas>-->
+					<div class="wtime" id="whours"></div>
+					<div class="wtime" id="wminutes"></div>
+					<div class="wtime" id="wseconds"></div>
+					<div id="wdate"></div>
+				</div>
 			</div>
-		</div>
 		</div>
 
 	</body>
 	<script>
-		var can = document.getElementById('canvas');
-		can.style.width = "100%";
-        can.style.height = "100%";
-        var ctx=can.getContext("2d");
-        var b = can.width/20;
-        var num = Math.floor((can.width/b) * (can.height/b))
-        for (var x=0;x <can.width;x+=b){
-        	for (var y=0;y <can.height;y+=b){
-        		ctx.fillStyle='#' + colors[Math.floor(Math.random()*num)];
-        		ctx.fillRect(x, y,b, b);
-        	}
-        }
-
-<!--		ctx.drawImage(img,100%,100%);-->
-<!--		ctx.fillText("AAA",);-->
+<!--		var can = document.getElementById('canvas');-->
+<!--		can.style.width = "100%";-->
+<!--        can.style.height = "100%";-->
+<!--        var ctx=can.getContext("2d");-->
+<!--        var b = can.width/20;-->
+<!--        var num = Math.floor((can.width/b) * (can.height/b))-->
+<!--        for (var x=0;x <can.width;x+=b){-->
+<!--        	for (var y=0;y <can.height;y+=b){-->
+<!--        		ctx.fillStyle='#' + colors[Math.floor(Math.random()*num)];-->
+<!--        		ctx.fillRect(x, y,b, b);-->
+<!--        	}-->
+<!--        }-->
+<!--		const image = new Image();-->
+<!--		image.src = "/static/img/tmp.jpg";-->
+<!--		ctx.drawImage(image,0,0);-->
+<!--		ctx.fillText("AAA");-->
 
 	</script>
 </html>
