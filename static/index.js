@@ -8,7 +8,7 @@ var outTimeC = 10 * 1000; //control panel timeout 10s
 document.addEventListener("touchstart", function (e) {
      oldTime = new Date().getTime();
 });
-function OutTime(){
+function OutTime(timers){
     newTime = new Date().getTime();
     if(newTime - oldTime > outTime){
         oldTime = new Date().getTime();
@@ -17,6 +17,11 @@ function OutTime(){
     if(newTime - oldTime > outTimeC){
         oldTime = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
+        for(var i=0;i<timers.length;i++){
+            clearInterval(timers[i])
+            console.log("qingchudingshiqi1")
+        }
+
     }
 }
 
@@ -79,13 +84,15 @@ document.addEventListener("touchend", function (e) {
 });
 
 function initFunc(){
-    setMainPage(0);
+    setMainPage(1);
     updateTime();
     addEvent();
     getInitInfo();
+    window.timersG = initUpdateStats();
 };
+var timersG;
 window.onload = initFunc;
-window.setInterval(OutTime, 5000);
+window.setInterval(OutTime(window.timersG), 5000);
 
 
 

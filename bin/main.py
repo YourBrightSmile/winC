@@ -84,6 +84,25 @@ class GetInfoHandler(tornado.web.RequestHandler):
         self.write(json_encode(postResp))
         print('Post GetInfoHandler  End......')
 
+class GetInfoSHandler(tornado.web.RequestHandler):
+    def get(self):
+        pass
+    def post(self):
+        postBody = json_decode(self.request.body)
+        postResp = {}
+        try:
+            if postBody:
+                for key, value in postBody.items():
+                    if key == 'getTypes':
+                        for infoType in postBody[key]:
+                            postResp[infoType] = infoMethodDict[infoType]()
+                            #print("PPP", postResp[infoType])
+        except Exception as e:
+            print("Post GetInfoSHandler  Exception:", e)
+        self.set_header('Content-Type', 'application/text')
+        #print(postResp)
+        self.write(postResp)
+        #print('Post GetInfoSHandler  End......')
 
 def make_app():
     return tornado.web.Application([
@@ -91,6 +110,7 @@ def make_app():
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),
         (r"/setWin", SetHandler),
         (r"/getInfo", GetInfoHandler),
+        (r"/getInfoS", GetInfoSHandler),
         (r"/startProgram", StartprogramHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "../static/icon"}),
     ])

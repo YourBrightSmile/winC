@@ -111,25 +111,32 @@ html,body {
     font-size:20px;
     color: white;
 }
-
+.statusC {
+    border:1px solid lightgray;
+    margin:3px;
+    border-radius:5px;
+}
 #CPU {
-    height:50%;
+    height:47%;
     width:20%;
+    background: linear-gradient(to top,lightgreen 80%, transparent 0%);
+
 }
 #GPU {
-    height:50%;
+    height:47%;
     width:20%;
 }
 #MEM {
-    height:50%;
+    height:47%;
     width:20%;
 }
 #NET {
-    height:50%;
+    height:47%;
     width:20%;
 }
 #DISK {
-
+    height:100%;
+    width:59%;
 }
 .weather {
     float:left;

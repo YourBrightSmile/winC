@@ -11,4 +11,10 @@ infoMethodDict = {'getWeather': getWeather,
                   'getControlInfo': getControlInfo,
                   'getAudioOutVolumeInfo': getAudioOutVolumeInfo,
                   'getAudioInVolumeInfo': getAudioInVolumeInfo,
+                  'getIfStats': getIfStats,
+                  'getCpuStats': getCpuStats,
+                  'getGpuStats': getGpuStats,
+                  'getMemStats': getMemStats,
+                  'getDiskStats': getDiskStats,
+
                   }

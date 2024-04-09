@@ -7,6 +7,8 @@ import pynvml
 import wmi
 
 w = wmi.WMI()
+
+
 def getOsInfo():
     result = {}
     result['domain'] = os.environ['userdomain']
@@ -79,33 +81,56 @@ def getIfStats():
     ifstats = psutil.net_io_counters()
     result['bytes_sent'] = str(bytes2human(ifstats.bytes_sent))
     result['bytes_recv'] = str(bytes2human(ifstats.bytes_recv))
-    return result
+    res = ''' NET
+
+ SEND: ''' + result['bytes_sent']+'''
+
+ RECV: ''' + result['bytes_recv']+'''
+    '''
+    return res
+
+
 def getCpuStats():
     result = {}
     result['cpus'] = len(w.Win32_Processor())
-    result['cpus'] = psutil.cpu_count(logical=False)
-    result['lcpus'] = psutil.cpu_count()
-    result['freq'] = str(round(psutil.cpu_freq().current/1000,2))+"GHz"
+    result['cpus'] = str(psutil.cpu_count(logical=False))
+    result['lcpus'] = str(psutil.cpu_count())
+    result['freq'] = str(round(psutil.cpu_freq().current / 1000, 2)) + "GHz"
     result['maxfreq'] = str(round(psutil.cpu_freq().max / 1000, 2)) + "GHz"
-    result['cpu_percent'] = psutil.cpu_percent(interval=1)
-    return result
+    result['cpu_percent'] = str(psutil.cpu_percent(interval=1)) + "%"
+    result['temp'] = "60℃"
+    res = ''' CPU   ''' + result['maxfreq'] + '''
+
+     ''' + result['cpu_percent']+'''
+    '''+result['freq'] + '''
+
+ '''+result['temp']
+    return res
+
+
 def getGpuStats():
-    #intel
+    # intel
     gpus = w.Win32_VideoController()
+
 
 def getMemStats():
     result = {}
     memstats = psutil.virtual_memory()
     result['mem_total'] = str(bytes2human(memstats.total))
     result['mem_used'] = str(bytes2human(memstats.used))
-    result['mem_percent'] = memstats.percent
-    smemstats = psutil.swap_memory()
-    result['smem_total'] = str(bytes2human(smemstats.total))
-    result['smem_used'] = str(bytes2human(smemstats.used))
-    result['smem_percent'] = smemstats.percent
-    return result
-def getDsikStats():
+    result['mem_percent'] = str(memstats.percent) + "%"
+    result['mem_speed'] = str(w.Win32_PhysicalMemory()[0].Speed) + "MHz"
+    res = ''' MEM   ''' + result['mem_speed'] + '''
+
+     ''' + result['mem_percent'] + '''
+     
+ ''' + result['mem_used'] + ' / ' + result['mem_total']
+    return res
+
+
+def getDiskStats():
     result = {}
+    tmpstr = ''
     part = psutil.disk_partitions()
     for p in part:
         tmp = {}
@@ -114,6 +139,20 @@ def getDsikStats():
         tmp['total'] = str(bytes2human(dUse.total))
         tmp['used'] = str(bytes2human(dUse.used))
         tmp['free'] = str(bytes2human(dUse.free))
-        tmp['percent'] = dUse.percent
+        tmp['percent'] = str(dUse.percent) + "%"
+        tmpstr = tmpstr + '  ' + p.mountpoint + " " + tmp['used'] + ' / ' + tmp['total'] + ' \t' + tmp[
+            'percent'] + ', ' + tmp['fstype'] + '\n'
         result[p.mountpoint] = tmp
-    return result
+    smemstats = psutil.swap_memory()
+    result['smem_total'] = str(bytes2human(smemstats.total))
+    result['smem_used'] = str(bytes2human(smemstats.used))
+    result['smem_percent'] = str(smemstats.percent) + "%"
+    res1 = '''
+SWAP:
+    ''' + result['smem_used'] + ' / ' + result['smem_total'] + ',' + result['smem_percent']
+
+    res2 = '''
+
+MOUNT:
+''' + tmpstr
+    return res1 + res2

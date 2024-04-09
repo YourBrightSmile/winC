@@ -288,7 +288,7 @@ function addEvent(){
     //从屏保页面返回
     document.querySelector("body > div > div.wallpaper").addEventListener('touchstart',function(){
         document.querySelector("body > div > div.wallpaper").style.zIndex = -1;
-
+        window.timersG = initUpdateStats();//继续实时更新数据
     });
     //Tap
     document.querySelector("#page02 > div.ctrLock").addEventListener('click',function(){
@@ -298,7 +298,48 @@ function addEvent(){
 
 }
 
+function initUpdateStats(){
+    ifP = {
+            'getTypes':['getIfStats']
+        };
+    cpuP = {
+            'getTypes':['getCpuStats']
+        };
+    gpuP = {
+            'getTypes':['getGpuStats']
+        };
+    memP = {
+            'getTypes':['getMemStats']
+        };
+    diskP = {
+            'getTypes':['getDiskStats']
+    };
+    var ifTimer = setInterval(function(){
+        ifResp = JSON.parse(getInfoS(JSON.stringify(ifP)));
+        document.querySelector("#NET > pre").innerText = ifResp['getIfStats'];
+    }, 3000);
 
+    var cpuTimer = setInterval(function(){
+        cpuResp = JSON.parse(getInfoS(JSON.stringify(cpuP)));
+        document.querySelector("#CPU > pre").innerText = cpuResp['getCpuStats'];
+    }, 1000);
+    var gpuTimer = setInterval(function(){
+        gpuResp = JSON.parse(getInfoS(JSON.stringify(gpuP)));
+        document.querySelector("#GPU > pre").innerText = gpuResp['getGpuStats'];
+    }, 3000);
+    var memTimer = setInterval(function(){
+        memResp = JSON.parse(getInfoS(JSON.stringify(memP)));
+        document.querySelector("#MEM > pre").innerText = memResp['getMemStats'];
+    }, 3000);
+    var diskTimer = setInterval(function(){
+        diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
+        document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
+    }, 10 * 60 * 1000);
+    diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
+    document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
+    timers = [ifTimer,cpuTimer,gpuTimer,memTimer,diskTimer]
+    return timers
+}
 function updateTime() {
     days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     var now = new Date(); // 创建Date对象表示当前时间
@@ -455,6 +496,21 @@ function getInfo(params){
         data: params,
         type: "post",
         dataType: "json",
+        async:false,
+        success: function(res) {
+                resp =  res;
+        }
+    });
+    return resp
+}
+function getInfoS(params){
+    var resp;
+    //ajax
+    $.ajax({
+        url: "/getInfoS",
+        data: params,
+        type: "post",
+        dataType: "text",
         async:false,
         success: function(res) {
                 resp =  res;
