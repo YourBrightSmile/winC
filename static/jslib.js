@@ -315,25 +315,35 @@ function initUpdateStats(){
             'getTypes':['getDiskStats']
     };
     var ifTimer = setInterval(function(){
-        ifResp = JSON.parse(getInfoS(JSON.stringify(ifP)));
-        document.querySelector("#NET > pre").innerText = ifResp['getIfStats'];
+	setTimeout(function(){
+        	ifResp = JSON.parse(getInfoS(JSON.stringify(ifP)));
+        	document.querySelector("#NET > pre").innerText = ifResp['getIfStats'];
+	},0);
     }, 3000);
 
     var cpuTimer = setInterval(function(){
-        cpuResp = JSON.parse(getInfoS(JSON.stringify(cpuP)));
-        document.querySelector("#CPU > pre").innerText = cpuResp['getCpuStats'];
+	setTimeout(function(){
+        	cpuResp = JSON.parse(getInfoS(JSON.stringify(cpuP)));
+        	document.querySelector("#CPU > pre").innerText = cpuResp['getCpuStats'];
+	},0);
     }, 1000);
     var gpuTimer = setInterval(function(){
-        gpuResp = JSON.parse(getInfoS(JSON.stringify(gpuP)));
-        document.querySelector("#GPU > pre").innerText = gpuResp['getGpuStats'];
+	setTimeout(function(){
+        	gpuResp = JSON.parse(getInfoS(JSON.stringify(gpuP)));
+        	document.querySelector("#GPU > pre").innerText = gpuResp['getGpuStats'];
+	},0);
     }, 3000);
     var memTimer = setInterval(function(){
-        memResp = JSON.parse(getInfoS(JSON.stringify(memP)));
-        document.querySelector("#MEM > pre").innerText = memResp['getMemStats'];
+	setTimeout(function(){
+        	memResp = JSON.parse(getInfoS(JSON.stringify(memP)));
+        	document.querySelector("#MEM > pre").innerText = memResp['getMemStats'];
+	},0);
     }, 3000);
     var diskTimer = setInterval(function(){
-        diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
-        document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
+	setTimeout(function(){
+        	diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
+        	document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
+	},0);
     }, 10 * 60 * 1000);
     diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
     document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
