@@ -7,6 +7,10 @@ appconfig = {
     },
     "WindowsTerminal": {
         "appIcon": "../static/icon/app/WindowsTerminal.ico",
+        "appCommand": r"wt"
+    },
+    "WindowsTerminal1": {
+        "appIcon": "../static/icon/app/WindowsTerminal.ico",
         "appCommand": r"D:\Sinstall\terminal-1.19.10573.0\WindowsTerminal.exe"
     },
     "appname": {
