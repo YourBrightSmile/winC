@@ -20,10 +20,7 @@ from lib import policyconfig as pc
 from lib.winInfoLib import *
 from conf.appconfig import appconfig
 
-# cwdpath = os.getcwd()
-# clr.AddReference(cwdpath + r'\OpenHardwareMonitorLib.dll')
-# clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
-# from OpenHardwareMonitor.Hardware import Computer
+
 
 
 def getMonitorsAndBrightness():
