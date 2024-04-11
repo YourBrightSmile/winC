@@ -99,7 +99,7 @@ def getCpuStats():
     result['maxfreq'] = str(round(psutil.cpu_freq().max / 1000, 2)) + "GHz"
     result['cpu_percent'] = str(psutil.cpu_percent(interval=1)) + "%"
     result['temp'] = "60℃"
-    res = ''' CPU   ''' + result['maxfreq'] + '''
+    res = ''' CPU  ''' + result['maxfreq'] + '''
 
      ''' + result['cpu_percent']+'''
     '''+result['freq'] + '''

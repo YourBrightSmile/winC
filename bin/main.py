@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import tornado
+import tornado.websocket
 from tornado.escape import json_decode, json_encode
 import json
 import aiofiles
@@ -56,7 +57,7 @@ class StartprogramHandler(tornado.web.RequestHandler):
     def post(self):
         appName = bytes.decode(self.request.body)
         try:
-            #startProgarmOnWindowDesktop(appconfig[appName]['appCommand'])
+            # startProgarmOnWindowDesktop(appconfig[appName]['appCommand'])
             subprocess.Popen(appconfig[appName]['appCommand'], close_fds=True)
         except Exception as e:
             print("StartprogramHandler  Exception:", e)
@@ -84,9 +85,11 @@ class GetInfoHandler(tornado.web.RequestHandler):
         self.write(json_encode(postResp))
         print('Post GetInfoHandler  End......')
 
+
 class GetInfoSHandler(tornado.web.RequestHandler):
     def get(self):
         pass
+
     def post(self):
         postBody = json_decode(self.request.body)
         postResp = {}
@@ -96,13 +99,35 @@ class GetInfoSHandler(tornado.web.RequestHandler):
                     if key == 'getTypes':
                         for infoType in postBody[key]:
                             postResp[infoType] = infoMethodDict[infoType]()
-                            #print("PPP", postResp[infoType])
+                            # print("PPP", postResp[infoType])
         except Exception as e:
             print("Post GetInfoSHandler  Exception:", e)
         self.set_header('Content-Type', 'application/text')
-        #print(postResp)
+        # print(postResp)
         self.write(postResp)
-        #print('Post GetInfoSHandler  End......')
+        # print('Post GetInfoSHandler  End......')
+
+
+class TestHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("TestHandler")
+
+    def post(self):
+        pass
+
+
+class StatusWebSocket(tornado.websocket.WebSocketHandler):
+    def open(self):
+        print("WebSocket opened...")
+
+    def on_message(self, message):
+        self.write_message(u"You said: " + message)
+        print(message)
+
+    def on_close(self):
+        print("WebSocket closed...")
+
+
 
 def make_app():
     return tornado.web.Application([
@@ -112,6 +137,8 @@ def make_app():
         (r"/getInfo", GetInfoHandler),
         (r"/getInfoS", GetInfoSHandler),
         (r"/startProgram", StartprogramHandler),
+        (r"/test", TestHandler),
+        (r"/status", StatusWebSocket),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "../static/icon"}),
     ])
 

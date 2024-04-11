@@ -5,25 +5,54 @@ var oldTimeC = new Date().getTime();
 var newTime = new Date().getTime();
 var outTime = 5 * 60 * 1000; //screen timeout 5min
 var outTimeC = 10 * 1000; //control panel timeout 10s
-
+var checkFlag = 1;
 document.addEventListener("touchstart", function (e) {
      oldTime = new Date().getTime();
      oldTimeC = new Date().getTime();
 });
-function OutTime(timers){
+function OutTime(){
+    console.log("out time check")
+    timers=window.timersG
+    outTimer=window.outTimer
     newTime = new Date().getTime();
+    //检查服务器是否断连
+    if (checkFlag==1){
+        //服务器断连时关闭定时器
+        setTimeout(function(){
+            $.ajax({
+                url: "/test",
+                data: null,
+                type: "get",
+                dataType: "text",
+                //async:false,
+                error: function(res) {
+                     clearInterval(outTimer);
+                     checkFlag=0;
+                     console.log("断连清除所有定时器并且不再检查...");
+                }
+            });
+        },0);
+    }
+
+    //检查页面是否长时间未操作
     if(newTime - oldTime > outTime){
         oldTime = new Date().getTime();
+        //设置闲时显示
         document.querySelector("body > div > div.wallpaper").style.zIndex = 10;
+        //关闭状态数据更新及服务器断连检查
+//        for(var i=0;i<timers.length;i++){
+//            clearInterval(timers[i])
+//            console.log("qingchudingshiqi1")
+//        }
+        checkFlag = 0;
+        //关闭页面超时检查
+        clearInterval(outTimer);
     };
+
+    //检查control panel是否长时间未操作
     if(newTime - oldTimeC > outTimeC){
         oldTimeC = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
-        for(var i=0;i<timers.length;i++){
-            clearInterval(timers[i])
-            console.log("qingchudingshiqi1")
-        }
-
     }
 }
 
@@ -90,11 +119,18 @@ function initFunc(){
     updateTime();
     addEvent();
     getInitInfo();
-    window.timersG = initUpdateStats();
+    initUpdateStats();
+    window.outTimer = window.setInterval(OutTime, 5000);
+
+    //window.timersG=0;
+    //    window.timersG = initUpdateStats();
 };
 var timersG;
+var outTimer;
+
+
 window.onload = initFunc;
-window.setInterval(OutTime(window.timersG), 5000);
+
 
 
 

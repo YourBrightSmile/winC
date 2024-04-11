@@ -4,8 +4,8 @@ function addEvent(){
     //control pannel
 
     //param: mute/nomute/1-100
-//testparams = {'setType':'winVolumeAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
-//testparams = {'setType':'winMicrophoneAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+    //testparams = {'setType':'winVolumeAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
+    //testparams = {'setType':'winMicrophoneAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
     //volume_control
     document.querySelector("#volume_control > div.c_input > input").addEventListener('input',function(){
         params = {  'setType':'winVolumeAdjust',
@@ -83,13 +83,12 @@ function addEvent(){
             'setType':'switchIODevice',
             'setParams':{'deviceId': did,'role':'0'}
         };
-        setWin(JSON.stringify(params))
-
         params1 = {
             'getTypes':['getAudioOutVolumeInfo']
         };
-        vol = getInfo(JSON.stringify(params1))
-
+        //getInfo(JSON.stringify(params1))
+        setWin(JSON.stringify(params));
+        vol = getInfo(JSON.stringify(params1));
         volValue = vol['getAudioOutVolumeInfo']['speaker']['volume']
         volMute = vol['getAudioOutVolumeInfo']['speaker']['isMute']
         document.querySelector("#volume_control > div.c_input > input").value = volValue;
@@ -177,15 +176,14 @@ function addEvent(){
             'setType':'switchIODevice',
             'setParams':{'deviceId': did,'role':'1'}
         };
-        setWin(JSON.stringify(params))
-
         params1 = {
             'getTypes':['getAudioInVolumeInfo']
         };
-        vol = getInfo(JSON.stringify(params1))
-
-        volValue = vol['getAudioInVolumeInfo']['microphone']['volume']
-        volMute = vol['getAudioInVolumeInfo']['microphone']['isMute']
+//        getInfo(JSON.stringify(params1))
+        setWin(JSON.stringify(params));
+        vol = getInfo(JSON.stringify(params1));
+        volValue = vol['getAudioInVolumeInfo']['microphone']['volume'];
+        volMute = vol['getAudioInVolumeInfo']['microphone']['isMute'];
         document.querySelector("#mic_control > div.c_input > input").value = volValue;
         document.querySelector("#mic_control > div.c_input > img").value = Number(volMute);
         if (Number(volMute) == 0){
@@ -288,68 +286,152 @@ function addEvent(){
     //从屏保页面返回
     document.querySelector("body > div > div.wallpaper").addEventListener('touchstart',function(){
         document.querySelector("body > div > div.wallpaper").style.zIndex = -1;
-        window.timersG = initUpdateStats();//继续实时更新数据
+//        window.timersG = initUpdateStats();//继续实时更新数据
+        //继续状态更新和页面超时检查
+        checkFlag=1;
+        initUpdateStats();//继续实时更新数据
+        window.outTimer = window.setInterval(OutTime, 5000);
     });
     //Tap
     document.querySelector("#page02 > div.ctrLock").addEventListener('click',function(){
         document.querySelector("#page02 > div.ctrLock").style.zIndex = -1;
 
     });
-
+    //F5
+//    document.querySelector("#F5").addEventListener('click',function(){
+//        //开启屏幕超时和状态信息更新
+//        console.log("开启屏幕超时和状态信息更新...")
+////        window.timersG = initUpdateStats();
+//        checkFlag=1;
+//        initUpdateStats();
+//        window.outTimer = window.setInterval(OutTime, 5000);
+//    });
 }
+
+var ifP = {
+        'getTypes':['getIfStats']
+    };
+var cpuP = {
+        'getTypes':['getCpuStats']
+    };
+var gpuP = {
+        'getTypes':['getGpuStats']
+    };
+var memP = {
+        'getTypes':['getMemStats']
+    };
+var diskP = {
+        'getTypes':['getDiskStats']
+};
 
 function initUpdateStats(){
-    ifP = {
-            'getTypes':['getIfStats']
-        };
-    cpuP = {
-            'getTypes':['getCpuStats']
-        };
-    gpuP = {
-            'getTypes':['getGpuStats']
-        };
-    memP = {
-            'getTypes':['getMemStats']
-        };
-    diskP = {
-            'getTypes':['getDiskStats']
-    };
-    var ifTimer = setInterval(function(){
-	setTimeout(function(){
-        	ifResp = JSON.parse(getInfoS(JSON.stringify(ifP)));
-        	document.querySelector("#NET > pre").innerText = ifResp['getIfStats'];
-	},0);
-    }, 3000);
-
-    var cpuTimer = setInterval(function(){
-	setTimeout(function(){
-        	cpuResp = JSON.parse(getInfoS(JSON.stringify(cpuP)));
-        	document.querySelector("#CPU > pre").innerText = cpuResp['getCpuStats'];
-	},0);
-    }, 1000);
-    var gpuTimer = setInterval(function(){
-	setTimeout(function(){
-        	gpuResp = JSON.parse(getInfoS(JSON.stringify(gpuP)));
-        	document.querySelector("#GPU > pre").innerText = gpuResp['getGpuStats'];
-	},0);
-    }, 3000);
-    var memTimer = setInterval(function(){
-	setTimeout(function(){
-        	memResp = JSON.parse(getInfoS(JSON.stringify(memP)));
-        	document.querySelector("#MEM > pre").innerText = memResp['getMemStats'];
-	},0);
-    }, 3000);
-    var diskTimer = setInterval(function(){
-	setTimeout(function(){
-        	diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
-        	document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
-	},0);
-    }, 10 * 60 * 1000);
-    diskResp = JSON.parse(getInfoS(JSON.stringify(diskP)));
-    document.querySelector("#DISK > pre").innerText = diskResp['getDiskStats'];
-    timers = [ifTimer,cpuTimer,gpuTimer,memTimer,diskTimer]
-    return timers
+    ifUpdatefun();
+    cpuUpdatefun();
+    gpuUpdatefun();
+    memUpdatefun();
+    diskUpdatefun();
 }
+
+
+let ifTimer = null
+let cpuTimer = null
+let gpuTimer = null
+let memTimer = null
+let diskTimer = null
+function ifUpdatefun(){
+    if(checkFlag==0){
+        clearTimeout(ifTimer);
+    }else{
+        clearTimeout(ifTimer);
+        $.when(getInfoS(JSON.stringify(ifP))).done(function(res){
+            updateStats(JSON.stringify(ifP),res);
+            ifTimer = setTimeout(ifUpdatefun,30*1000);
+
+        }).fail(function(res){});
+
+    }
+}
+function cpuUpdatefun(){
+    if(checkFlag==0){
+        clearTimeout(cpuTimer)
+    }else{
+        clearTimeout(cpuTimer)
+        $.when(getInfoS(JSON.stringify(cpuP))).done(function(res){
+            updateStats(JSON.stringify(cpuP),res);
+            cpuTimer = setTimeout(cpuUpdatefun,1000);
+        }).fail(function(res){});
+    }
+}
+function gpuUpdatefun(){
+    if(checkFlag==0){
+        clearTimeout(gpuTimer)
+    }else{
+        clearTimeout(gpuTimer)
+        $.when(getInfoS(JSON.stringify(gpuP))).done(function(res){
+            updateStats(JSON.stringify(gpuP),res);
+            gpuTimer = setTimeout(gpuUpdatefun,1000);
+        }).fail(function(res){});
+    }
+}
+function memUpdatefun(){
+    if(checkFlag==0){
+        clearTimeout(memTimer)
+    }else{
+        clearTimeout(memTimer)
+        $.when(getInfoS(JSON.stringify(memP))).done(function(res){
+            updateStats(JSON.stringify(memP),res);
+            memTimer = setTimeout(memUpdatefun,3*1000);
+        }).fail(function(res){});
+    }
+}
+function diskUpdatefun(){
+    if(checkFlag==0){
+        clearTimeout(diskTimer)
+    }else{
+        clearTimeout(diskTimer)
+        $.when(getInfoS(JSON.stringify(diskP))).done(function(res){
+            updateStats(JSON.stringify(diskP),res);
+            diskTimer = setTimeout(diskUpdatefun,30*60*1000);
+        }).fail(function(res){});
+    }
+}
+
+function updateStats(params,res){
+    types = JSON.parse(params).getTypes;
+    for (i=0;i<types.length;i++){
+        switch(types[i]){
+            case 'getIfStats':
+        	    document.querySelector("#NET > pre").innerText = JSON.parse(res)['getIfStats'];
+                break
+            case 'getCpuStats':
+                text = JSON.parse(res)['getCpuStats']
+                document.querySelector("#CPU > pre").innerText = text;
+                percent = text.match("[0-9].*%")[0]
+                document.querySelector("#CPU").style.background = "linear-gradient(to top,lightgreen "+percent+", transparent 0%)";
+                break
+            case 'getGpuStats':
+                text = JSON.parse(res)['getGpuStats'];
+                document.querySelector("#GPU > pre").innerText = text;
+                //percent = text.match("[0-9].*%")[0]
+                percent = "20%";
+                document.querySelector("#GPU").style.background = "linear-gradient(to top,lightgreen "+percent+", transparent 0%)";
+
+                break
+            case 'getMemStats':
+                text = JSON.parse(res)['getMemStats'];
+                document.querySelector("#MEM > pre").innerText = text;
+                percent = text.match("[0-9].*%")[0];
+                document.querySelector("#MEM").style.background = "linear-gradient(to top,lightgreen "+percent+", transparent 0%)";
+                break
+            case 'getDiskStats':
+                document.querySelector("#DISK > pre").innerText = JSON.parse(res)['getDiskStats'];
+                break
+            default:
+                console.log('updateStats no action')
+        }
+    }
+};
+
 function updateTime() {
     days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     var now = new Date(); // 创建Date对象表示当前时间
@@ -399,24 +481,22 @@ function updateWeatherValue(resp){
     var now = new Date();
     hour = now.getHours();
     var urlIcon = "https://weather.cma.cn/static/img/w/icon/w"
-    document.querySelector("#daysCurr_img > img").src=urlIcon+resp['getWeather']['data']['daily'][0]['dayCode']+'.png';
-    document.querySelector("#currTemperature").innerHTML=resp['getWeather']['data']['now']['temperature'];
-    document.querySelector("#precipitation").innerHTML='降水<br><br>'+resp['getWeather']['data']['now']['precipitation']+'mm';
-    document.querySelector("#wind").innerHTML=resp['getWeather']['data']['now']['windDirection']+'<br><br>'+resp['getWeather']['data']['now']['windScale'];
+    document.querySelector("#daysCurr_img > img").src=urlIcon+resp['data']['daily'][0]['dayCode']+'.png';
+    document.querySelector("#currTemperature").innerHTML=resp['data']['now']['temperature'];
+    document.querySelector("#precipitation").innerHTML='降水<br><br>'+resp['data']['now']['precipitation']+'mm';
+    document.querySelector("#wind").innerHTML=resp['data']['now']['windDirection']+'<br><br>'+resp['data']['now']['windScale'];
     for (var i=0;i<7;i++){
-        document.querySelector("#days0"+i+"_range").innerHTML=resp['getWeather']['data']['daily'][i]['high']+'℃/'+resp['getWeather']['data']['daily'][i]['low']+'℃'
+        document.querySelector("#days0"+i+"_range").innerHTML=resp['data']['daily'][i]['high']+'℃/'+resp['data']['daily'][i]['low']+'℃'
         ;
         if (hour<18){
-            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['getWeather']['data']['daily'][i]['dayCode']+'.png';
-            document.querySelector("#days0"+i+"_desc").innerHTML=resp['getWeather']['data']['daily'][i]['dayText'];
-            document.querySelector("#days0"+i+"_date").innerHTML=resp['getWeather']['data']['daily'][i]['date'].substr(5);
+            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['data']['daily'][i]['dayCode']+'.png';
+            document.querySelector("#days0"+i+"_desc").innerHTML=resp['data']['daily'][i]['dayText'];
+            document.querySelector("#days0"+i+"_date").innerHTML=resp['data']['daily'][i]['date'].substr(5);
         }else{
-            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['getWeather']['data']['daily'][i]['nightCode']+'.png';
-            document.querySelector("#days0"+i+"_desc").innerHTML=resp['getWeather']['data']['daily'][i]['nightText'];
-            document.querySelector("#days0"+i+"_date").innerHTML=resp['getWeather']['data']['daily'][i]['date'].substr(5);
+            document.querySelector("#days0"+i+"_img > img").src=urlIcon+resp['data']['daily'][i]['nightCode']+'.png';
+            document.querySelector("#days0"+i+"_desc").innerHTML=resp['data']['daily'][i]['nightText'];
+            document.querySelector("#days0"+i+"_date").innerHTML=resp['data']['daily'][i]['date'].substr(5);
         };
-
-
     };
 }
 function updateControlPanel(resp){
@@ -479,8 +559,8 @@ function updateControlPanel(resp){
 //获取所有信息
 function getInitInfo(){
     var resp;
-//    var params = {'getTypes':['getWeather','getMonitorsAndBrightness','getAudioInfo']}
-    var params = {'getTypes':['getControlInfo']}
+    var params = {'getTypes':['getWeather','getControlInfo']}
+//    var params = {'getTypes':['getControlInfo']}
     //ajax
     $.ajax({
         url: "/getInfo",
@@ -488,7 +568,7 @@ function getInitInfo(){
         type: "post",
         dataType: "json",
         success: function(res) {
-//                updateWeatherValue(res['getWeather']);
+                updateWeatherValue(res['getWeather']);
                 updateControlPanel(res['getControlInfo']);
                 console.log("getInitInfo end")
         }
@@ -499,6 +579,7 @@ function getInitInfo(){
 //testparams = {'getTypes':['getMonitorsAndBrightness']};getInfo(JSON.stringify(testparams))
 //testparams = {'getTypes':['getAudioInfo']};getInfo(JSON.stringify(testparams))
 function getInfo(params){
+//    var defer = $.Deferred();
     var resp;
     //ajax
     $.ajax({
@@ -509,24 +590,30 @@ function getInfo(params){
         async:false,
         success: function(res) {
                 resp =  res;
+//                defer.resolve(res);
         }
     });
     return resp
+//    return defer.promise();
 }
+//$.when(getInfo()).done(function(res){}).fail(function(res){});
+
 function getInfoS(params){
-    var resp;
+//    window.paramsG=params;
+    var defer = $.Deferred();
     //ajax
     $.ajax({
         url: "/getInfoS",
         data: params,
         type: "post",
         dataType: "text",
-        async:false,
+        //async:false,
         success: function(res) {
-                resp =  res;
+
+                defer.resolve(res);
         }
     });
-    return resp
+    return defer.promise();
 }
 
 //param: mute/nomute/1-100
@@ -545,10 +632,7 @@ function setWin(params){
         dataType: "json",
         async:false,
         success: function(res) {
-//                updateWeatherValue(res);
-//                updateControlPanel(res);
                 console.log(res)
-
         }
     });
 }
@@ -580,6 +664,16 @@ function setMainPage(page){
     }
 }
 
+
+
+//var ws = new WebSocket("ws://localhost:19433/status");//ws open
+//
+//ws.onopen = function() {
+//   ws.send("Hello, world");
+//};
+//ws.onmessage = function (evt) {
+//   alert(evt.data);
+//};
 
 colors = [
     "5c2223",
