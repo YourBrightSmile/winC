@@ -26,7 +26,8 @@ function OutTime(){
                 dataType: "text",
                 //async:false,
                 error: function(res) {
-                     clearInterval(outTimer);
+		     
+                     //clearInterval(outTimer);
                      checkFlag=0;
                      console.log("断连清除所有定时器并且不再检查...");
                 }

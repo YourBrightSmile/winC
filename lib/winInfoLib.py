@@ -5,11 +5,12 @@ import os
 import clr
 import psutil
 from psutil._common import bytes2human
-import pynvml
+from pynvml import *
 import wmi
 
 cwdpath = os.getcwd()
 clr.AddReference(cwdpath + r'\..\lib\OpenHardwareMonitorLib.dll')
+# clr.AddReference(cwdpath + r'\lib\OpenHardwareMonitorLib.dll')
 # clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
 from OpenHardwareMonitor.Hardware import Computer
 from OpenHardwareMonitor import Hardware
@@ -91,10 +92,54 @@ def getIfStats():
     result['bytes_recv'] = str(bytes2human(ifstats.bytes_recv))
     res = ''' NET
 
+
  SEND: ''' + result['bytes_sent'] + '''
 
  RECV: ''' + result['bytes_recv'] + '''
     '''
+    return res
+
+
+def getCpuTempPower():
+    cpuResult = {}
+    handle = Computer()
+    handle.CPUEnabled = True
+    # handle.GPUEnabled = True
+    handle.Open()
+    for hardware in handle.Hardware:
+        if hardware.HardwareType == Hardware.HardwareType.CPU:
+            hardware.Update()
+            for sensor in hardware.Sensors:
+                if sensor.SensorType == Hardware.SensorType.Temperature and "Package" in sensor.Name:
+                    cpuResult[sensor.Name + " Temp"] = sensor.Value
+                if sensor.SensorType == Hardware.SensorType.Power and "Package" in sensor.Name:
+                    cpuResult[sensor.Name + " Power"] = sensor.Value
+    handle.Close()
+    if cpuResult:
+        return cpuResult
+
+
+def getGpuStats():
+    # intel
+    # gpus = w.Win32_VideoController()
+    result = {}
+    nvmlInit()
+    handle = nvml.nvmlDeviceGetHandleByIndex(0)
+    meminfo = nvmlDeviceGetMemoryInfo(handle)
+    result['gpu_memused'] = str(bytes2human(meminfo.used))
+    result['gpu_memtotal'] = str(bytes2human(meminfo.total))
+    result['gpu_fan'] = str(nvmlDeviceGetFanSpeed(handle)) + '%'
+    result['gpu_power'] = str(round(nvmlDeviceGetPowerUsage(handle) / 1024, 2)) + "W"
+    result['gpu_percent'] = str(nvmlDeviceGetUtilizationRates(handle).gpu) + "%"
+    result['gpu_temp'] = str(nvmlDeviceGetTemperature(handle, NVML_TEMPERATURE_GPU)) + "℃"
+    res = (''' GPU      ''' + result['gpu_percent'] + '''
+
+   ''' + result['gpu_memused'] + '/' + result['gpu_memtotal'] + '''
+  
+   Fan ''' + result['gpu_fan'] + '''
+   
+ ''' + result['gpu_power'] + ',' + result['gpu_temp'])
+    nvmlShutdown()
     return res
 
 
@@ -106,36 +151,21 @@ def getCpuStats():
     result['freq'] = str(round(psutil.cpu_freq().current / 1000, 2)) + "GHz"
     result['maxfreq'] = str(round(psutil.cpu_freq().max / 1000, 2)) + "GHz"
     result['cpu_percent'] = str(psutil.cpu_percent(interval=1)) + "%"
-    result['temp'] = str(list(getCpuTemp()[0].values())[0]) + "℃"
+    ctp = getCpuTempPower()
+    for name, value in ctp.items():
+        # if "Power" in name:
+        #     result['power'] = str(round(value)) + "W"
+        if "Temp" in name:
+            result['temp'] = str(round(value)) + "℃"
+    result['power'] = "40W"
+
     res = ''' CPU  ''' + result['maxfreq'] + '''
 
      ''' + result['cpu_percent'] + '''
     ''' + result['freq'] + '''
 
- ''' + result['temp']
+   ''' + result['power'] + ',' + result['temp']
     return res
-
-
-def getCpuTemp():
-    cpuTemps = []
-    handle = Computer()
-    handle.CPUEnabled = True
-    handle.Open()
-    for hardware in handle.Hardware:
-        if hardware.HardwareType == Hardware.HardwareType.CPU:
-            hardware.Update()
-            for sensor in hardware.Sensors:
-                if sensor.SensorType == Hardware.SensorType.Temperature and "Package" in sensor.Name:
-                    cpuTemps.append({sensor.Identifier: sensor.Value})
-
-    handle.Close()
-    if cpuTemps:
-        return cpuTemps
-
-
-def getGpuStats():
-    # intel
-    gpus = w.Win32_VideoController()
 
 
 def getMemStats():
@@ -147,9 +177,10 @@ def getMemStats():
     result['mem_speed'] = str(w.Win32_PhysicalMemory()[0].Speed) + "MHz"
     res = ''' MEM   ''' + result['mem_speed'] + '''
 
+        
      ''' + result['mem_percent'] + '''
      
- ''' + result['mem_used'] + ' / ' + result['mem_total']
+  ''' + result['mem_used'] + '/' + result['mem_total']
     return res
 
 

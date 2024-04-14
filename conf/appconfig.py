@@ -9,9 +9,9 @@ appconfig = {
         "appIcon": "../static/icon/app/WindowsTerminal.ico",
         "appCommand": r"wt"
     },
-    "WindowsTerminal1": {
-        "appIcon": "../static/icon/app/WindowsTerminal.ico",
-        "appCommand": r"D:\Sinstall\terminal-1.19.10573.0\WindowsTerminal.exe"
+    "QQMusic": {
+        "appIcon": "../static/icon/app/qqmusic.png",
+        "appCommand": r"G:\install\qqmusic\QQMusic1933.18.29.37\QQMusic.exe"
     },
     "appname": {
         "appIcon": "",

@@ -412,8 +412,8 @@ function updateStats(params,res){
             case 'getGpuStats':
                 text = JSON.parse(res)['getGpuStats'];
                 document.querySelector("#GPU > pre").innerText = text;
-                //percent = text.match("[0-9].*%")[0]
-                percent = "20%";
+                percent = text.match("GPU      [0-9].*%")[0].replace(/\s/g, "").split("GPU")[1]
+//                percent = "20%";
                 document.querySelector("#GPU").style.background = "linear-gradient(to top,lightgreen "+percent+", transparent 0%)";
 
                 break
