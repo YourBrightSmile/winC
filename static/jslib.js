@@ -308,10 +308,12 @@ function addEvent(){
 //    });
     document.querySelector("#qqMusic").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
     });
 
     document.querySelector("#qqMusic img").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
         musicP = {
             'getTypes':['getMusicInfo']
          };
@@ -334,6 +336,7 @@ function addEvent(){
 
     document.querySelector("#songCtrPre").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
         params = {  'setType':'ctrlMusicShortcuts',
                         'setParams':{'app': 'QQMusic','key':'previous'}
                       };
@@ -349,6 +352,7 @@ function addEvent(){
     });
     document.querySelector("#songCtrPlay").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
         params = {  'setType':'ctrlMusicShortcuts',
                         'setParams':{'app': 'QQMusic','key':'play'}
                       };
@@ -364,6 +368,7 @@ function addEvent(){
     });
     document.querySelector("#songCtrNext").addEventListener('click',function(e){
         e.stopPropagation();
+       oldTimeQ = new Date().getTime();
         params = {  'setType':'ctrlMusicShortcuts',
                         'setParams':{'app': 'QQMusic','key':'next'}
                       };
@@ -379,6 +384,7 @@ function addEvent(){
     });
     document.querySelector("#songCtrVoldown").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
         params = {  'setType':'ctrlMusicShortcuts',
                         'setParams':{'app': 'QQMusic','key':'voldown'}
                       };
@@ -386,6 +392,7 @@ function addEvent(){
     });
     document.querySelector("#songCtrVolup").addEventListener('click',function(e){
         e.stopPropagation();
+        oldTimeQ = new Date().getTime();
         params = {  'setType':'ctrlMusicShortcuts',
                         'setParams':{'app': 'QQMusic','key':'volup'}
                       };

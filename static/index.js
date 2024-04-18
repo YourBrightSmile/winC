@@ -2,6 +2,7 @@
 //监听页面是否长时间未操作
 var oldTime = new Date().getTime();
 var oldTimeC = new Date().getTime();
+var oldTimeQ = new Date().getTime();
 var newTime = new Date().getTime();
 var outTime = 5 * 60 * 1000; //screen timeout 5min
 var outTimeC = 10 * 1000; //control panel timeout 10s
@@ -55,6 +56,25 @@ function OutTime(){
         oldTimeC = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
     }
+     //检查qqmusic ctl是否长时间未操作
+    if(newTime - oldTimeQ > outTimeC){
+        oldTimeQ = new Date().getTime();
+        songCtrContainer = document.querySelector("#songCtrContainer");
+        if (songCtrContainer.style.display=="inline"){
+            qqMusicDiv = document.querySelector("#qqMusic");
+            qqMusicImg = document.querySelector("#qqMusic img");
+            qqMusic.style.width="60px";
+            qqMusic.style.height="20%";
+            qqMusic.style.marginLeft="90%";
+            qqMusic.style.background="";
+            qqMusicImg.style.marginTop ="0";
+            qqMusicImg.style.marginLeft ="0";
+            songCtrContainer.style.display = "none";
+            document.querySelector("#qqMusic > img").src = "../static/icon/app/qqmusic.png";
+        };
+    }
+
+
 }
 
 //页面滑动
