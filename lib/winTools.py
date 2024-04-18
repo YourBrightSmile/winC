@@ -21,8 +21,6 @@ from lib.winInfoLib import *
 from conf.appconfig import appconfig
 
 
-
-
 def getMonitorsAndBrightness():
     mab = {}
     mons = sbc.list_monitors()
@@ -89,9 +87,9 @@ def getAudioVolumeInfo(type):
             speakers = AudioUtilities.GetSpeakers()
             if speakers:
                 tmp = {}
-                #BUG 0xC0000005  fixed
-                #interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-                #volume = cast(interface, POINTER(IAudioEndpointVolume))
+                # BUG 0xC0000005  fixed
+                # interface = speakers.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                # volume = cast(interface, POINTER(IAudioEndpointVolume))
                 volume = AudioUtilities.CreateDevice(speakers).EndpointVolume
                 tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
                 tmp['isMute'] = volume.GetMute()
@@ -101,21 +99,26 @@ def getAudioVolumeInfo(type):
             microphone = AudioUtilities.GetMicrophone()
             if microphone:
                 tmp = {}
-                #interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-                #volume = cast(interface, POINTER(IAudioEndpointVolume))
+                # interface = microphone.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                # volume = cast(interface, POINTER(IAudioEndpointVolume))
                 volume = AudioUtilities.CreateDevice(microphone).EndpointVolume
                 tmp['volume'] = round(volume.GetMasterVolumeLevelScalar() * 100)
                 tmp['isMute'] = volume.GetMute()
                 volumeInfo['microphone'] = tmp
 
     except Exception as e:
-        print("getAudioVolumeInfo: ",e)
+        print("getAudioVolumeInfo: ", e)
     return volumeInfo
+
 
 def getAudioOutVolumeInfo():
     return getAudioVolumeInfo('out')
+
+
 def getAudioInVolumeInfo():
     return getAudioVolumeInfo('in')
+
+
 def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
     devices = []
     # for all use EDataFlow.eAll.value
@@ -139,8 +142,8 @@ def enumAudioDevices(direction="all", state=DEVICE_STATE.ACTIVE.value):
                     if not ": None" in str(AudioUtilities.CreateDevice(dev)):
                         devices.append(AudioUtilities.CreateDevice(dev))
     except Exception as e:
-        print("enumAudioDevices: ",e)
-    #deviceEnumerator.Release()
+        print("enumAudioDevices: ", e)
+    # deviceEnumerator.Release()
     return devices
 
 
@@ -181,7 +184,7 @@ def getControlInfo():
     audioInfo = getAudioVolumeInfo('all')
     deviceInfo = getAudioDevicesID()
     monitorInfo = getMonitorsAndBrightness()
-    #deviceInfo,monitorInfo=None,None
+    # deviceInfo,monitorInfo=None,None
     if audioInfo and deviceInfo and monitorInfo:
         audioInfo['audioInfo'] = deviceInfo
         audioInfo['monitorInfo'] = monitorInfo
@@ -199,6 +202,7 @@ def switchIODevice(params):
 
     policy_config.SetDefaultEndpoint(params['deviceId'], int(params['role']))
     policy_config.Release()
+
 
 # desktops start from 1
 # window (startX,startY,endX,endY)
@@ -233,6 +237,7 @@ def startProgarmOnWindowDesktop(commands, window=None, desktops=1):
             moveWindowForPid(process.pid, 0, 0, desktops, win32con.SW_SHOWMINIMIZED)
             print("comman end...", command)
 
+
 def createDesktops(desktops, names=None):
     vdNum = len(get_virtual_desktops())
     if desktops > vdNum:
@@ -240,6 +245,7 @@ def createDesktops(desktops, names=None):
             VirtualDesktop(i).create()
             if names:
                 VirtualDesktop(i).rename(names[i - vdNum])
+
 
 def moveWindowForPid(pid, x, y, SW, desktop=1, ):
     def callback(hwnd, hwnds):
@@ -269,9 +275,29 @@ def moveWindowForPid(pid, x, y, SW, desktop=1, ):
     else:
         return False
 
+
+def MyEnumWindowsAll():
+    def callback(hwnd, hwnds):
+        if win32gui.IsWindow(hwnd):
+            print(win32gui.GetWindowText(hwnd))
+            hwnds.append(hwnd)
+
+    hwnds = []
+    win32gui.EnumWindows(callback, hwnds)
+def MyEnumWindowsForPid(pid):
+    def callback(hwnd, hwnds):
+        if win32gui.IsWindow(hwnd):
+            _, found_pid = win32process.GetWindowThreadProcessId(hwnd)
+            if found_pid == pid:
+                print(win32gui.GetWindowText(hwnd))
+                hwnds.append(hwnd)
+    hwnds = []
+    win32gui.EnumWindows(callback, hwnds)
+    if hwnds:
+        return hwnds
+
 def getAppInfo():
     return appconfig
-
 
 
 def isWinLocked():
@@ -291,6 +317,3 @@ def unlockWindows():
         time.sleep(1)
     except:
         pass
-
-
-

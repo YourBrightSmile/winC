@@ -306,6 +306,108 @@ function addEvent(){
 //        initUpdateStats();
 //        window.outTimer = window.setInterval(OutTime, 5000);
 //    });
+    document.querySelector("#qqMusic").addEventListener('click',function(e){
+        e.stopPropagation();
+    });
+
+    document.querySelector("#qqMusic img").addEventListener('click',function(e){
+        e.stopPropagation();
+        musicP = {
+            'getTypes':['getMusicInfo']
+         };
+        $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
+            document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
+            qqMusicDiv = document.querySelector("#qqMusic");
+            qqMusicImg = document.querySelector("#qqMusic img");
+            songCtrContainer = document.querySelector("#songCtrContainer");
+            qqMusic.style.width="400px";
+            qqMusic.style.height="100px";
+            qqMusic.style.marginLeft="50%";
+            qqMusic.style.background="pink";
+            qqMusicImg.style.marginTop ="5%";
+            qqMusicImg.style.marginLeft ="4%";
+            songCtrContainer.style.display = "inline";
+        }).fail(function(res){});
+    });
+
+    document.querySelector("#songCtrPre").addEventListener('click',function(e){
+        e.stopPropagation();
+        params = {  'setType':'ctrlMusicShortcuts',
+                        'setParams':{'app': 'QQMusic','key':'previous'}
+                      };
+        setWin(JSON.stringify(params));
+        musicP = {
+            'getTypes':['getMusicInfo']
+         };
+        $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
+            document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
+        }).fail(function(res){});
+    });
+    document.querySelector("#songCtrPlay").addEventListener('click',function(e){
+        e.stopPropagation();
+        params = {  'setType':'ctrlMusicShortcuts',
+                        'setParams':{'app': 'QQMusic','key':'play'}
+                      };
+        setWin(JSON.stringify(params));
+        musicP = {
+            'getTypes':['getMusicInfo']
+         };
+        $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
+            document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
+        }).fail(function(res){});
+    });
+    document.querySelector("#songCtrNext").addEventListener('click',function(e){
+        e.stopPropagation();
+        params = {  'setType':'ctrlMusicShortcuts',
+                        'setParams':{'app': 'QQMusic','key':'next'}
+                      };
+        setWin(JSON.stringify(params));
+        musicP = {
+            'getTypes':['getMusicInfo']
+         };
+        $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
+            document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
+        }).fail(function(res){});
+    });
+    document.querySelector("#songCtrVoldown").addEventListener('click',function(e){
+        e.stopPropagation();
+        params = {  'setType':'ctrlMusicShortcuts',
+                        'setParams':{'app': 'QQMusic','key':'voldown'}
+                      };
+        setWin(JSON.stringify(params));
+    });
+    document.querySelector("#songCtrVolup").addEventListener('click',function(e){
+        e.stopPropagation();
+        params = {  'setType':'ctrlMusicShortcuts',
+                        'setParams':{'app': 'QQMusic','key':'volup'}
+                      };
+        setWin(JSON.stringify(params));
+    });
+
+
+     document.querySelector(".foot").addEventListener('click',function(){
+        songCtrContainer = document.querySelector("#songCtrContainer");
+        if (songCtrContainer.style.display=="inline"){
+            qqMusicDiv = document.querySelector("#qqMusic");
+            qqMusicImg = document.querySelector("#qqMusic img");
+            qqMusic.style.width="60px";
+            qqMusic.style.height="20%";
+            qqMusic.style.marginLeft="90%";
+            qqMusic.style.background="";
+            qqMusicImg.style.marginTop ="0";
+            qqMusicImg.style.marginLeft ="0";
+            songCtrContainer.style.display = "none";
+            document.querySelector("#qqMusic > img").src = "../static/icon/app/qqmusic.png";
+        };
+    });
 }
 
 var ifP = {

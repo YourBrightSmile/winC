@@ -99,7 +99,7 @@ class GetInfoSHandler(tornado.web.RequestHandler):
                     if key == 'getTypes':
                         for infoType in postBody[key]:
                             postResp[infoType] = infoMethodDict[infoType]()
-                            # print("PPP", postResp[infoType])
+                            #print("GetInfoSHandler", postResp[infoType])
         except Exception as e:
             print("Post GetInfoSHandler  Exception:", e)
         self.set_header('Content-Type', 'application/text')

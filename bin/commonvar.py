@@ -1,4 +1,5 @@
 #!/bin/python3
+from lib.musicLib import getMusicInfo, ctrlMusicShortcuts
 from lib.otherTools import getWeather
 from lib.winTools import *
 
@@ -16,5 +17,7 @@ infoMethodDict = {'getWeather': getWeather,
                   'getGpuStats': getGpuStats,
                   'getMemStats': getMemStats,
                   'getDiskStats': getDiskStats,
+                  'getMusicInfo': getMusicInfo,
+                  'ctrlMusicShortcuts': ctrlMusicShortcuts,
 
                   }

@@ -1,5 +1,4 @@
-
-#appname 需要唯一
+# appname 需要唯一
 appconfig = {
     "edge": {
         "appIcon": "../static/icon/app/edge.png",
@@ -18,4 +17,12 @@ appconfig = {
         "appCommand": r""
     },
 
+}
+
+qqMusicShortcuts = {
+    "play": "ctrl + alt +'",
+    "previous": "ctrl + alt + left",
+    "next": "ctrl + alt +right",
+    "volup": "ctrl + alt + up",
+    "voldown": "ctrl + alt + down",
 }
