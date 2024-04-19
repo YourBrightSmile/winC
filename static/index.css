@@ -405,7 +405,7 @@ input[type="range"]::-webkit-slider-container {
     margin-top: 25%;
     margin-left: 90%;
     border-radius:20px;
-    z-index:9;
+    z-index:-1;
 }
 
 #qqMusic img {

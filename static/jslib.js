@@ -327,7 +327,7 @@ function addEvent(){
             qqMusic.style.width="400px";
             qqMusic.style.height="100px";
             qqMusic.style.marginLeft="50%";
-            qqMusic.style.background="pink";
+            qqMusic.style.background="lightgray";
             qqMusicImg.style.marginTop ="5%";
             qqMusicImg.style.marginLeft ="4%";
             songCtrContainer.style.display = "inline";
@@ -399,7 +399,6 @@ function addEvent(){
         setWin(JSON.stringify(params));
     });
 
-
      document.querySelector(".foot").addEventListener('click',function(){
         songCtrContainer = document.querySelector("#songCtrContainer");
         if (songCtrContainer.style.display=="inline"){
@@ -439,6 +438,16 @@ function initUpdateStats(){
     gpuUpdatefun();
     memUpdatefun();
     diskUpdatefun();
+    //检查qqmusic是否启动
+    musicP = {
+            'getTypes':['getMusicInfo']
+         };
+    $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            if ( !!resp['getMusicInfo'] ){
+                document.querySelector("#qqMusic").style.zIndex = "9";
+            }
+    }).fail(function(res){});
 }
 
 

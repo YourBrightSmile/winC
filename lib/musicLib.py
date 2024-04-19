@@ -17,7 +17,8 @@ def getMusicInfo():
     try:
         qqMusic = pymem.Pymem("QQMusic.exe")
     except Exception as e:
-        print("pymem init failed", e)
+        return "NA"
+        #print("pymem init failed", e)
     if qqMusic:
         result = {}
         address = qqMusic.pattern_scan_all(patternSpec.encode('utf-8'), return_multiple=True)

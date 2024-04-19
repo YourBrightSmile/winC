@@ -56,7 +56,19 @@ function OutTime(){
         oldTimeC = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
     }
-     //检查qqmusic ctl是否长时间未操作
+    //检查qqmusic是否启动
+    musicP = {
+            'getTypes':['getMusicInfo']
+         };
+    $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
+            resp = JSON.parse(res)
+            if ( typeof resp['getMusicInfo'] != 'undefined' ){
+                document.querySelector("#qqMusic").style.zIndex = "9";
+            }else{
+                document.querySelector("#qqMusic").style.zIndex = "-1";
+            }
+    }).fail(function(res){});
+    //检查qqmusic ctl是否长时间未操作
     if(newTime - oldTimeQ > outTimeC){
         oldTimeQ = new Date().getTime();
         songCtrContainer = document.querySelector("#songCtrContainer");
