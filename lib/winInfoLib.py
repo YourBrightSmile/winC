@@ -10,8 +10,7 @@ import wmi
 
 cwdpath = os.getcwd()
 clr.AddReference(cwdpath + r'\..\lib\OpenHardwareMonitorLib.dll')
-# clr.AddReference(cwdpath + r'\lib\OpenHardwareMonitorLib.dll')
-# clr.AddReference(cwdpath+r'\lib\OpenHardwareMonitorLib.dll')
+#clr.AddReference(cwdpath + r'\lib\OpenHardwareMonitorLib.dll')
 from OpenHardwareMonitor.Hardware import Computer
 from OpenHardwareMonitor import Hardware
 
@@ -114,7 +113,9 @@ def getCpuTempPower():
                     cpuResult[sensor.Name + " Temp"] = sensor.Value
                 if sensor.SensorType == Hardware.SensorType.Power and "Package" in sensor.Name:
                     cpuResult[sensor.Name + " Power"] = sensor.Value
-    handle.Close()
+                #if sensor.SensorType == Hardware.SensorType.Load and "Total" in sensor.Name:
+                #    cpuResult[sensor.Name + " TotalLoad"] = sensor.Value
+    #handle.Close()
     if cpuResult:
         return cpuResult
 
@@ -150,14 +151,18 @@ def getCpuStats():
     result['lcpus'] = str(psutil.cpu_count())
     result['freq'] = str(round(psutil.cpu_freq().current / 1000, 2)) + "GHz"
     result['maxfreq'] = str(round(psutil.cpu_freq().max / 1000, 2)) + "GHz"
+    #amd 3700x not precise
     result['cpu_percent'] = str(psutil.cpu_percent(interval=1)) + "%"
     ctp = getCpuTempPower()
     for name, value in ctp.items():
-        # if "Power" in name:
-        #     result['power'] = str(round(value)) + "W"
+        if "Power" in name and value is not None:
+             result['power'] = str(round(value)) + "W"
+        else:
+            result['power'] = "NA W"
         if "Temp" in name:
             result['temp'] = str(round(value)) + "℃"
-    result['power'] = "40W"
+
+    #result['power'] = "40W"
 
     res = ''' CPU  ''' + result['maxfreq'] + '''
 

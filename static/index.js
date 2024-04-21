@@ -62,7 +62,7 @@ function OutTime(){
          };
     $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
             resp = JSON.parse(res)
-            if ( typeof resp['getMusicInfo'] != 'undefined' ){
+            if ( resp['getMusicInfo'] != 'NA' ){
                 document.querySelector("#qqMusic").style.zIndex = "9";
             }else{
                 document.querySelector("#qqMusic").style.zIndex = "-1";

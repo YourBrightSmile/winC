@@ -297,6 +297,7 @@ function addEvent(){
         document.querySelector("#page02 > div.ctrLock").style.zIndex = -1;
 
     });
+
     //F5
 //    document.querySelector("#F5").addEventListener('click',function(){
 //        //开启屏幕超时和状态信息更新
@@ -319,18 +320,22 @@ function addEvent(){
          };
         $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
             resp = JSON.parse(res)
-            document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
-            document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
-            qqMusicDiv = document.querySelector("#qqMusic");
-            qqMusicImg = document.querySelector("#qqMusic img");
-            songCtrContainer = document.querySelector("#songCtrContainer");
-            qqMusic.style.width="400px";
-            qqMusic.style.height="100px";
-            qqMusic.style.marginLeft="50%";
-            qqMusic.style.background="lightgray";
-            qqMusicImg.style.marginTop ="5%";
-            qqMusicImg.style.marginLeft ="4%";
-            songCtrContainer.style.display = "inline";
+            if ( resp['getMusicInfo'] != 'NA' ){
+
+                document.querySelector("#songName").innerText= resp['getMusicInfo']['songName'];
+                document.querySelector("#qqMusic > img").src = resp['getMusicInfo']['songImgUrl'];
+                qqMusicDiv = document.querySelector("#qqMusic");
+                qqMusicImg = document.querySelector("#qqMusic img");
+                songCtrContainer = document.querySelector("#songCtrContainer");
+                qqMusic.style.width="400px";
+                qqMusic.style.height="100px";
+                qqMusic.style.marginLeft="50%";
+                qqMusic.style.background="lightgray";
+                qqMusicImg.style.marginTop ="5%";
+                qqMusicImg.style.marginLeft ="4%";
+                songCtrContainer.style.display = "inline";
+            }
+
         }).fail(function(res){});
     });
 
@@ -444,7 +449,7 @@ function initUpdateStats(){
          };
     $.when(getInfoS(JSON.stringify(musicP))).done(function(res){
             resp = JSON.parse(res)
-            if ( !!resp['getMusicInfo'] ){
+            if ( resp['getMusicInfo'] != "NA" ){
                 document.querySelector("#qqMusic").style.zIndex = "9";
             }
     }).fail(function(res){});
