@@ -27,6 +27,7 @@ class MainHandler(tornado.web.RequestHandler):
         osInfo = getOsInfo()
         params = {i: (" N/A" if osInfo is None else osInfo[i]) for i in genParamsName}
         params.update({"appconfig": appconfig})
+        params.update({"bootMac": bootInfo["mac"]})
         content = tornado.template.Loader("../static/").load("index.html").generate(**params)
         self.write(content)
         # winTools.winBrightnessAdjust(30)

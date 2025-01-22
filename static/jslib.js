@@ -283,13 +283,33 @@ function addEvent(){
             startProgram(this.id)
         });
     };
+
+    //BOOT 图片动画
+    bootImg = document.querySelector("#boot");
+    bootImg.addEventListener('touchstart',function(event){
+        event.preventDefault();
+        bootImg.style.width="50%";
+        bootImg.style.height="50%";
+        bootImg.style.transitionDuration="0.5s";
+        this.timer = setTimeout(function() {
+            //boot computer
+            //showToast("send magic packet to boot "+bootImg.getAttribute('value'))
+            bootComputer(bootImg.getAttribute('value'));
+        }, 3000);
+        bootImg.addEventListener('touchend',function(){
+            clearTimeout(this.timer);
+            bootImg.style.width="80%";
+        });
+
+
+    });
+
     //从屏保页面返回
     document.querySelector("body > div > div.wallpaper").addEventListener('touchstart',function(){
         document.querySelector("body > div > div.wallpaper").style.zIndex = -1;
-//        window.timersG = initUpdateStats();//继续实时更新数据
         //继续状态更新和页面超时检查
         checkFlag=1;
-        initUpdateStats();//继续实时更新数据
+        //initUpdateStats();//继续实时更新数据
         window.outTimer = window.setInterval(OutTime, 5000);
     });
     //Tap
@@ -298,7 +318,7 @@ function addEvent(){
 
     });
 
-    //F5
+//F5
 //    document.querySelector("#F5").addEventListener('click',function(){
 //        //开启屏幕超时和状态信息更新
 //        console.log("开启屏幕超时和状态信息更新...")
@@ -776,6 +796,25 @@ function startProgram(appname){
         }
     });
 }
+function bootComputer(mac){
+    var resp;
+    //ajax
+
+    $.ajax({
+        url: "http://192.168.3.111/bootComputer",
+        data: mac,
+        type: "post",
+        dataType: "json",
+        async: true,
+        timeout: 1000,
+        success: function() {
+            showToast("send magic packet to "+mac+" success...",3000);
+        },
+        error: function() {
+            showToast("send magic packet to "+mac+" error...",3000);
+        }
+    });
+}
 
 //setMainPage,page strart from index 0
 function setMainPage(page){
@@ -787,6 +826,19 @@ function setMainPage(page){
     }
 }
 
+function showToast(msg,duration){
+    duration=isNaN(duration)?3000:duration;
+    var m = document.createElement('div');
+    m.innerHTML = msg;
+    m.style.cssText="width:60%; min-width:180px; background:#000; opacity:0.6; height:auto;min-height: 30px; color:#fff; line-height:30px; text-align:center; border-radius:4px; position:fixed; top:2%; left:20%; z-index:999999;";
+    document.body.appendChild(m);
+    setTimeout(function() {
+        var d = 0.5;
+        m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+        m.style.opacity = '0';
+        setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+    }, duration);
+}
 
 
 //var ws = new WebSocket("ws://localhost:19433/status");//ws open

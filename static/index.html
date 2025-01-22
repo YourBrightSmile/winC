@@ -12,8 +12,8 @@
 		<div class="foot">
 			<div class="panel" id="page00">
 				<div class="osContainer">
-					<div class="osPic">
-						<img src="../static/img/windows.png">
+					<div class="osPic"  >
+						<img src="../static/img/windows.png" id="boot" value="{{bootMac}}" >
 					</div>
 					<div class="osInfo">
 						<pre>
@@ -41,57 +41,9 @@ OS: {{os}}
 					</div>
 					<div class="date_text" id="date">2024年3月2日，星期六</div>
 				</div>
-				<div class="winStatusContainer">
-					<div class="statusC" id="CPU">
-						<pre>
- CPU   2.29GHz
-
-      50%
-    2.11GHz
-
- 60℃
-						</pre>
-					</div>
-					<div class="statusC" id="GPU">
-						<pre>
- GPU   2.29GHz
-
-      50%
-    2.11GHz
-
- 60℃
-						</pre>
-					</div>
-					<div class="statusC" id="NET">
-						<pre>
- NET
-
-   SEND:128M
-
-   RECV:222M
-
-						</pre>
-					</div>
-					<div class="statusC" id="MEM">
-						<pre>
- MEM   1600MHz
-
-      50%
-    10G/16G
-
-
-						</pre>
-					</div>
-					<div class="statusC" id="DISK">
-						<pre>
-SWAP:
-    9.3G / 15.7G,59.4%
-
-MOUNT:
-    C:\\: 128G / 167G 77.1% , NTFS
-    D:\\: 128G / 167G 77.1% , NTFS
-						</pre>
-					</div>
+				<div id="ggPaper">
+					<div id="meme"></div>
+					<div id="less"></div>
 
 				</div>
 				<div class="weather">
@@ -149,6 +101,7 @@ MOUNT:
 				</div>
 
 			</div>
+
 			<div class="panel" id="page02">
 				<div class="control" id="volume_control">
 					<div class="c_input">
@@ -253,3 +206,120 @@ MOUNT:
 
 	</script>
 </html>
+<!--			<div class="panel" id="page01">-->
+<!--				<div class="datetime">-->
+<!--					<div id="datetime_container">-->
+<!--						<div class="datetime_text" id="hours">00</div>-->
+<!--						<div class="datetime_text" id="minutes">00</div>-->
+<!--						<div class="datetime_text" id="seconds">00</div>-->
+<!--					</div>-->
+<!--					<div class="date_text" id="date">2024年3月2日，星期六</div>-->
+<!--				</div>-->
+<!--				<div class="winStatusContainer">-->
+<!--					<div class="statusC" id="CPU">-->
+<!--						<pre>-->
+<!-- CPU   2.29GHz-->
+
+<!--      50%-->
+<!--    2.11GHz-->
+
+<!-- 60℃-->
+<!--						</pre>-->
+<!--					</div>-->
+<!--					<div class="statusC" id="GPU">-->
+<!--						<pre>-->
+<!-- GPU   2.29GHz-->
+
+<!--      50%-->
+<!--    2.11GHz-->
+
+<!-- 60℃-->
+<!--						</pre>-->
+<!--					</div>-->
+<!--					<div class="statusC" id="NET">-->
+<!--						<pre>-->
+<!-- NET-->
+
+<!--   SEND:128M-->
+
+<!--   RECV:222M-->
+
+<!--						</pre>-->
+<!--					</div>-->
+<!--					<div class="statusC" id="MEM">-->
+<!--						<pre>-->
+<!-- MEM   1600MHz-->
+
+<!--      50%-->
+<!--    10G/16G-->
+
+
+<!--						</pre>-->
+<!--					</div>-->
+<!--					<div class="statusC" id="DISK">-->
+<!--						<pre>-->
+<!--SWAP:-->
+<!--    9.3G / 15.7G,59.4%-->
+
+<!--MOUNT:-->
+<!--    C:\\: 128G / 167G 77.1% , NTFS-->
+<!--    D:\\: 128G / 167G 77.1% , NTFS-->
+<!--						</pre>-->
+<!--					</div>-->
+
+<!--				</div>-->
+<!--				<div class="weather">-->
+<!--					<div class="cur_weather">-->
+<!--						<div id="daysCurr_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--						<div id="currTemperature">0℃</div>-->
+<!--						<div id="precipitation">降水<br><br>0mm</div>-->
+<!--						<div id="wind">0风<br><br>0级</div>-->
+<!--					</div>-->
+<!--					<div class="days_weatherC">-->
+<!--						<div class="days_weather" >-->
+<!--							<div class="days_range" id="days00_range">20℃/18℃</div>-->
+<!--							<div id="days00_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days00_desc">多云转晴</div>-->
+<!--							<div id="days00_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather">-->
+<!--							<div class="days_range" id="days01_range">20℃/18℃</div>-->
+<!--							<div id="days01_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days01_desc">多云</div>-->
+<!--							<div id="days01_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather">-->
+<!--							<div class="days_range" id="days02_range">20℃/18℃</div>-->
+<!--							<div id="days02_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days02_desc">多云转晴</div>-->
+<!--							<div id="days02_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather" >-->
+<!--							<div class="days_range" id="days03_range">20℃/18℃</div>-->
+<!--							<div id="days03_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days03_desc">多云转晴</div>-->
+<!--							<div id="days03_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather" >-->
+<!--							<div class="days_range" id="days04_range">20℃/18℃</div>-->
+<!--							<div id="days04_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days04_desc">多云转晴</div>-->
+<!--							<div id="days04_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather" >-->
+<!--							<div class="days_range" id="days05_range">20℃/18℃</div>-->
+<!--							<div id="days05_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days05_desc">多云转晴</div>-->
+<!--							<div id="days05_date">03/07</div>-->
+<!--						</div>-->
+<!--						<div class="days_weather" >-->
+<!--							<div class="days_range" id="days06_range">20℃/18℃</div>-->
+<!--							<div id="days06_img"><img src="https://weather.cma.cn/static/img/w/icon/w7.png"></div>-->
+<!--							<div id="days06_desc">多云转晴</div>-->
+<!--							<div id="days06_date">03/07</div>-->
+<!--						</div>-->
+<!--					</div>-->
+
+<!--				</div>-->
+
+<!--			</div>-->

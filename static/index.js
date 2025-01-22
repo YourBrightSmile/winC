@@ -147,12 +147,14 @@ document.addEventListener("touchend", function (e) {
     }
 });
 
+
+
 function initFunc(){
     setMainPage(1);
     updateTime();
     addEvent();
     getInitInfo();
-    initUpdateStats();
+    //initUpdateStats();
     window.outTimer = window.setInterval(OutTime, 5000);
 
     //window.timersG=0;

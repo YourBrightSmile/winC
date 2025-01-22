@@ -46,3 +46,8 @@ qqMusicShortcuts = {
     "volup": "ctrl + alt + up",
     "voldown": "ctrl + alt + down",
 }
+
+bootInfo = {
+    "mac": "aa:bb:cc:dd:ee:ff",
+    "ip": "1.2.3.4",
+}
