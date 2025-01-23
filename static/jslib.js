@@ -458,11 +458,11 @@ var diskP = {
 };
 
 function initUpdateStats(){
-    ifUpdatefun();
-    cpuUpdatefun();
-    gpuUpdatefun();
-    memUpdatefun();
-    diskUpdatefun();
+//    ifUpdatefun();
+//    cpuUpdatefun();
+//    gpuUpdatefun();
+//    memUpdatefun();
+//    diskUpdatefun();
     //检查qqmusic是否启动
     musicP = {
             'getTypes':['getMusicInfo']
