@@ -152,6 +152,8 @@ document.addEventListener("touchend", function (e) {
 function initFunc(){
     setMainPage(1);
     updateTime();
+    updateTimeTextColort();
+    updateMeme();
     addEvent();
     getInitInfo();
     //initUpdateStats();

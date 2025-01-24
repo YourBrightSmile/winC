@@ -51,3 +51,8 @@ bootInfo = {
     "mac": "aa:bb:cc:dd:ee:ff",
     "ip": "1.2.3.4",
 }
+
+memeInfo = {
+    "memePath" : r"G:\note\obsidianData\GG\2.阅读\摘录收集",
+}
+

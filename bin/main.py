@@ -116,6 +116,12 @@ class TestHandler(tornado.web.RequestHandler):
 
     def post(self):
         pass
+class GetMemeHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write(getMeme())
+
+    def post(self):
+        pass
 
 
 class StatusWebSocket(tornado.websocket.WebSocketHandler):
@@ -141,6 +147,7 @@ def make_app():
         (r"/startProgram", StartprogramHandler),
         (r"/test", TestHandler),
         (r"/status", StatusWebSocket),
+        (r"/getMeme", GetMemeHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "../static/icon"}),
     ])
 

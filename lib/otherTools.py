@@ -1,7 +1,9 @@
 #!/bin/python3
 import json
 import requests
-
+import os
+import random
+from conf.appconfig import memeInfo
 
 def getWeather():
     weatherUrl = "https://weather.cma.cn/api/weather/view?stationid="
@@ -12,7 +14,9 @@ def getWeather():
         #weatherData['data']['daily'][0]['date']
     else:
         pass
-
+def getMeme():
+    with open(os.path.join(memeInfo["memePath"],random.choice(os.listdir(memeInfo["memePath"]))),"r",encoding='utf-8') as f:
+        return random.choice(f.readlines())
 # res = getWeather()
 #
 # print(res['data']['daily'][0]['date'])

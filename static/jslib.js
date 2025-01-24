@@ -1,8 +1,12 @@
 
 
 function addEvent(){
-    //control pannel
+    //hover dispaly 7 days weather
+//    document.querySelector('.cur_weather').addEventListener('mouseover', function() {
+//        document.querySelector('.days_weatherC').style.zIndex=11;
+//    });
 
+    //control pannel
     //param: mute/nomute/1-100
     //testparams = {'setType':'winVolumeAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
     //testparams = {'setType':'winMicrophoneAdjust','setParams':{'param':'mute'}};setWin(JSON.stringify(testparams))
@@ -812,6 +816,18 @@ function bootComputer(mac){
         },
         error: function() {
             showToast("send magic packet to "+mac+" error...",3000);
+        }
+    });
+}
+
+function updateMeme(){
+    $.ajax({
+        url: "/getMeme",
+        type: "get",
+        dataType: "text",
+        async:true,
+        success: function(res) {
+                 document.querySelector("#meme").innerHTML=res;
         }
     });
 }
