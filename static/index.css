@@ -98,6 +98,8 @@ html,body {
     background: rgb(9 241 210 / 88%);
     margin-top: 10px;
     margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 
 }
 #date {
