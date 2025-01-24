@@ -1,10 +1,6 @@
 
 
 function addEvent(){
-    //hover dispaly 7 days weather
-//    document.querySelector('.cur_weather').addEventListener('mouseover', function() {
-//        document.querySelector('.days_weatherC').style.zIndex=11;
-//    });
 
     //control pannel
     //param: mute/nomute/1-100
@@ -824,10 +820,11 @@ function updateMeme(){
     $.ajax({
         url: "/getMeme",
         type: "get",
-        dataType: "text",
+        dataType: "json",
         async:true,
         success: function(res) {
-                 document.querySelector("#meme").innerHTML=res;
+                 document.querySelector("#meme").innerHTML=res['excerpt'];
+                 document.querySelector("#gp1 > img").src=res['gifPath'];
         }
     });
 }

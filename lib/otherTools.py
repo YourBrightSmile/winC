@@ -15,8 +15,15 @@ def getWeather():
     else:
         pass
 def getMeme():
+    res = {}
     with open(os.path.join(memeInfo["memePath"],random.choice(os.listdir(memeInfo["memePath"]))),"r",encoding='utf-8') as f:
-        return random.choice(f.readlines())
+        excerpt =  random.choice(f.readlines())
+    if excerpt is not None:
+        res['excerpt'] = excerpt
+    gifPath = os.path.join(memeInfo["gifPath"],random.choice(os.listdir(memeInfo["gifPath"])))
+    if gifPath is not None:
+        res['gifPath'] = gifPath
+    return res
 # res = getWeather()
 #
 # print(res['data']['daily'][0]['date'])
