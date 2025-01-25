@@ -48,7 +48,7 @@ qqMusicShortcuts = {
 }
 
 bootInfo = {
-    "mac": "aa:bb:cc:dd:ee:ff",
+    "mac": "a8:5e:45:a7:0b:56",
     "ip": "1.2.3.4",
 }
 

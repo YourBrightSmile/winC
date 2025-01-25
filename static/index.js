@@ -4,7 +4,8 @@ var oldTime = new Date().getTime();
 var oldTimeC = new Date().getTime();
 var oldTimeQ = new Date().getTime();
 var newTime = new Date().getTime();
-var outTime = 5 * 60 * 1000; //screen timeout 5min
+//var outTime = 5 * 60 * 1000; //screen timeout 5min
+var outTime = 60 * 60 * 1000; 
 var outTimeC = 10 * 1000; //control panel timeout 10s
 var checkFlag = 1;
 document.addEventListener("touchstart", function (e) {
