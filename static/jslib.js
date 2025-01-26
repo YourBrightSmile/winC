@@ -315,6 +315,7 @@ function addEvent(){
     //Tap
     document.querySelector("#page02 > div.ctrLock").addEventListener('click',function(){
         document.querySelector("#page02 > div.ctrLock").style.zIndex = -1;
+        document.querySelector("#page02 > div.ctrLock > p").style.visibility = "hidden";
 
     });
 
@@ -646,7 +647,6 @@ function updateControlPanel(resp){
 
     document.querySelector("#volume_control > div.c_input > input").value = resp['speaker']['volume'];
     document.querySelector("#mic_control > div.c_input > input").value = resp['microphone']['volume'];
-
     vDevices = resp['audioInfo'];
     for (let dev in vDevices){
         vSelect = document.querySelector("#volume_control > div.c_select > select");
@@ -713,6 +713,7 @@ function getInitInfo(){
         success: function(res) {
                 updateWeatherValue(res['getWeather']);
                 updateControlPanel(res['getControlInfo']);
+                console.log(res['getControlInfo']);
                 console.log("getInitInfo end")
         }
     });
@@ -801,17 +802,17 @@ function bootComputer(mac){
     //ajax
 
     $.ajax({
-        url: "http://192.168.3.111/bootComputer",
+        url: "http://192.168.3.111:14444/bootComputer",
         data: mac,
-        type: "post",
+        type: "get",
         dataType: "json",
         async: true,
         timeout: 1000,
         success: function() {
-            showToast("send magic packet to "+mac+" success...",3000);
+            showToast("send magic packet to "+mac+" ...",3000);
         },
         error: function() {
-            showToast("send magic packet to "+mac+" error...",3000);
+            showToast("send magic packet to "+mac+" ...",3000);
         }
     });
 }

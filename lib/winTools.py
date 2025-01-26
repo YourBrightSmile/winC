@@ -35,8 +35,10 @@ def getMonitorsAndBrightness():
 def setMonitorBrightness(params):
     brightness = params['brightness']
     display = params['display']
-    sbc.set_brightness(brightness, display)
-
+    try:
+        sbc.set_brightness(brightness, display)
+    except Exception as e:
+        print("except Exception:", e)
 
 # volumeSize 0.01-1.00
 def winVolumeAdjust(params):

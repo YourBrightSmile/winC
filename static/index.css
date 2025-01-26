@@ -140,7 +140,7 @@ html,body {
     height:fit-content;
     width: 80%;
     margin-left:10%;
-    margin-top:20%;
+    margin-top:18%;
     padding:10px;
     border-radius: 10px;
     background: rgb(0,0,0,0.6);
@@ -286,7 +286,7 @@ html,body {
 input[type="range"] {
    -webkit-appearance: none;
    appearance: none;
-   writing-mode:vertical-lr;
+   writing-mode:sideways-lr;
    background: transparent;
    cursor: pointer;
    height:100%;

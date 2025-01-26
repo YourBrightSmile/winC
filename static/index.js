@@ -56,6 +56,7 @@ function OutTime(){
     if(newTime - oldTimeC > outTimeC){
         oldTimeC = new Date().getTime();
         document.querySelector("#page02 > div.ctrLock").style.zIndex = 10;
+        document.querySelector("#page02 > div.ctrLock > p").style.visibility = "visible";
     }
     //检查qqmusic是否启动
     musicP = {
