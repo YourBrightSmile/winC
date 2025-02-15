@@ -266,6 +266,8 @@ html,body {
     filter:opacity(80%);
     width:10%;
     height:10%;
+    background: white;
+    border-radius: 10px;
 }
 
 .c_button {
@@ -281,23 +283,28 @@ html,body {
     font-size: 30px;
     font-weight: bold;
     float:left;
+    background:white;
+    border-radius:10px;
 }
 
 input[type="range"] {
    -webkit-appearance: none;
    appearance: none;
-   writing-mode:sideways-lr;
+   /*writing-mode: sideways-lr;*/
    background: transparent;
    cursor: pointer;
-   height:100%;
-   width:50%;
+   height:99%;
+   width:90%;
+   transform: rotate(270deg);
 }
 
 /* slider track */
 input[type="range"]::-webkit-slider-runnable-track {
    background:rgba(0,0,0,0.5);
    width:100%;
-
+   height:55%;
+   border-radius:20px;
+   overflow: hidden;
 }
 
 /* slider thumb */
@@ -305,9 +312,9 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
    appearance: none;
    /*custom styles*/
-   border-image: linear-gradient(rgba(255,255,255,0.8),rgba(255,255,255,0.1)) 1 fill / 8 20 8 0 / 0 0 100vw 0; /*绘制元素外矩形*/
-   height: 0.1em;
-   width: 100%;
+   border-image: linear-gradient(rgba(255,255,255,1),rgba(255,255,255,1)) 1 fill / 8 20 8 0 / 0 0 0 100vw; /*绘制元素外矩形*/
+   height: 100%;
+   width:0.1em;
 }
 input[type="range"]::-webkit-slider-container {
     /*其他样式*/
