@@ -8,6 +8,7 @@ import tornado.websocket
 from tornado.escape import json_decode, json_encode
 import json
 import aiofiles
+import shutil
 
 pathS = [os.path.dirname(__file__) + '/../', os.path.dirname(__file__) + '/../lib']
 print("libs", pathS)
@@ -139,7 +140,7 @@ class StatusWebSocket(tornado.websocket.WebSocketHandler):
 
 def make_app():
     #random background
-    os.replace(get_randomFileR("../static/img/background"),"../static/img/background/background")
+    shutil.copy2(get_randomFileR("../static/img/background"),"../static/img/background/background")
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),
