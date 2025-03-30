@@ -1,6 +1,6 @@
 #!/bin/python3
 from lib.musicLib import getMusicInfo, ctrlMusicShortcuts
-from lib.otherTools import getWeather, getMeme
+from lib.otherTools import *
 from lib.winTools import *
 
 infoMethodDict = {'getWeather': getWeather,

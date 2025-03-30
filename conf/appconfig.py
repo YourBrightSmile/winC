@@ -53,7 +53,7 @@ bootInfo = {
 }
 
 memeInfo = {
-    "memePath" : r"G:\note\obsidianData\GG\2.阅读\摘录收集",
+    "memePath" : r"../static/text/",
     "gifPath"  : r"../static/img/gif",
 }
 

@@ -16,7 +16,7 @@ html,body {
     height:100%;
     position:absolute;
     background:gray;
-    background-image:url("./img/tmp.jpg");
+    background-image:url("./img/background/background");
     background-size:contain;
     display:flex;
     overflow:hidden;

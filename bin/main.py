@@ -138,6 +138,8 @@ class StatusWebSocket(tornado.websocket.WebSocketHandler):
 
 
 def make_app():
+    #random background
+    os.replace(get_randomFileR("../static/img/background"),"../static/img/background/background")
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "../static"}),

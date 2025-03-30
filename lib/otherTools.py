@@ -28,9 +28,25 @@ def getMeme():
     if gifPath is not None:
         res['gifPath'] = gifPath
     return res
-# res = getWeather()
-#
-# print(res['data']['daily'][0]['date'])
 
-
+def safe_rename(old_path, new_path):
+    """安全重命名文件，自动处理错误"""
+    try:
+        os.rename(old_path, new_path)
+        return True
+    except FileNotFoundError:
+        print(f"错误: 文件 {old_path} 不存在")
+    except FileExistsError:
+        print(f"错误: 文件 {new_path} 已存在")
+    except PermissionError:
+        print("错误: 无权限操作文件")
+    return False
+def get_randomFileR(directory):
+    file_list = []
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_list.append(os.path.join(root, file))
+    if not file_list:
+        return None
+    return random.choice(file_list)
 
